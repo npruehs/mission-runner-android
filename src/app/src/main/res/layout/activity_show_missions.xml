@@ -6,13 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ShowMissionsActivity">
 
-    <TextView
-        android:id="@+id/textViewHeader"
+
+    <fragment
+        android:id="@+id/fragmentShowMissions"
+        android:name="de.npruehs.missionrunner.ShowMissionsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/missions_text_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
