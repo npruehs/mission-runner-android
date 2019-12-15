@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Mission Runner</string>
-    <string name="text_account_level">Level:</string>
-    <string name="text_account_score">Score:</string>
+    <string name="main_text_account_level">Level:</string>
+    <string name="main_text_account_score">Score:</string>
+    <string name="main_button_missions">Missions</string>
+    <string name="missions_text_header">Missions</string>
 </resources>
