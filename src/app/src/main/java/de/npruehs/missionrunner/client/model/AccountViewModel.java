@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.model;
+package de.npruehs.missionrunner.client.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

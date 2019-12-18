@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragmentMain"
-        android:name="de.npruehs.missionrunner.MainFragment"
+        android:name="de.npruehs.missionrunner.client.MainFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

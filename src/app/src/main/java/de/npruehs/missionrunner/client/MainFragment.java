@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner;
+package de.npruehs.missionrunner.client;
 
 import android.content.Context;
 import android.net.Uri;
@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import de.npruehs.missionrunner.model.Account;
-import de.npruehs.missionrunner.model.AccountViewModel;
+import de.npruehs.missionrunner.client.model.Account;
+import de.npruehs.missionrunner.client.model.AccountViewModel;
 
 public class MainFragment extends Fragment implements View.OnClickListener, Observer<Account> {
     private AccountViewModel viewModel;

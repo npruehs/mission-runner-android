@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragmentShowMissions"
-        android:name="de.npruehs.missionrunner.ShowMissionsFragment"
+        android:name="de.npruehs.missionrunner.client.ShowMissionsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

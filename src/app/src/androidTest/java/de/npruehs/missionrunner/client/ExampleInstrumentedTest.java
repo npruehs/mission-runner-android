@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner;
+package de.npruehs.missionrunner.client;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("de.npruehs.missionrunner", appContext.getPackageName());
+        assertEquals("de.npruehs.missionrunner.client", appContext.getPackageName());
     }
 }

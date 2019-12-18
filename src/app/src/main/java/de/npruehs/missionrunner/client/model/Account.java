@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.model;
+package de.npruehs.missionrunner.client.model;
 
 public class Account {
     private String accountId;
