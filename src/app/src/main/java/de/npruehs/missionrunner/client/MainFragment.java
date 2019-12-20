@@ -92,7 +92,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Obse
     @Override
     public void onChanged(Account account) {
         if (textViewAccountName != null) {
-            textViewAccountName.setText(account.getAccountId());
+            textViewAccountName.setText(account.getId());
         }
 
         if (textViewAccountLevel != null) {

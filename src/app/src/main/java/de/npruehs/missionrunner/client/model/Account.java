@@ -1,12 +1,12 @@
 package de.npruehs.missionrunner.client.model;
 
 public class Account {
-    private String accountId;
+    private String id;
     private int level;
     private int score;
 
-    public String getAccountId() {
-        return accountId;
+    public String getId() {
+        return id;
     }
 
     public int getLevel() {
@@ -17,8 +17,8 @@ public class Account {
         return score;
     }
 
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setLevel(int level) {
