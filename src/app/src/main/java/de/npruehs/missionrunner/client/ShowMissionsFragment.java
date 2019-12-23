@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner;
+package de.npruehs.missionrunner.client;
 
 import android.content.Context;
 import android.net.Uri;

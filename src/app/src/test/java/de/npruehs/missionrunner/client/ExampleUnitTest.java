@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner;
+package de.npruehs.missionrunner.client;
 
 import org.junit.Test;
 
