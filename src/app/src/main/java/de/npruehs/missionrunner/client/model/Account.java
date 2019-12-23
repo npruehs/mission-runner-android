@@ -1,7 +1,15 @@
 package de.npruehs.missionrunner.client.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Account {
+    @PrimaryKey
+    @NonNull
     private String id;
+
     private int level;
     private int score;
 
