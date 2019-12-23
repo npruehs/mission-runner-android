@@ -16,11 +16,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import de.npruehs.missionrunner.client.model.Account;
 import de.npruehs.missionrunner.client.model.AccountViewModel;
 
 public class MainFragment extends Fragment implements View.OnClickListener, Observer<Account> {
-    private AccountViewModel viewModel;
+    @Inject
+    AccountViewModel viewModel;
 
     private TextView textViewAccountName;
     private TextView textViewAccountLevel;
@@ -57,13 +60,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, Obse
         textViewAccountLevel = view.findViewById(R.id.textViewAccountLevelValue);
         textViewAccountScore = view.findViewById(R.id.textViewAccountScoreValue);
 
-        viewModel = new AccountViewModel();
         viewModel.getAccount().observe(getViewLifecycleOwner(), this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        ((MainActivity)getActivity()).accountComponent.inject(this);
 
         if (context instanceof OnMainFragmentInteractionListener) {
             listener = (OnMainFragmentInteractionListener) context;
