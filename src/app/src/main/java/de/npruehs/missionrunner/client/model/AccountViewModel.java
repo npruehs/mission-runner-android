@@ -11,7 +11,7 @@ import de.npruehs.missionrunner.client.controller.AccountRepository;
 @ActivityScope
 public class AccountViewModel extends ViewModel {
     private final AccountRepository accountRepository;
-    private LiveData<Account> account;
+    private LiveData<Resource<Account>> account;
 
     @Inject
     public AccountViewModel(AccountRepository accountRepository) {
@@ -20,7 +20,7 @@ public class AccountViewModel extends ViewModel {
         account = accountRepository.getAccount("A1B2C3");
     }
 
-    public LiveData<Account> getAccount() {
+    public LiveData<Resource<Account>> getAccount() {
         return account;
     }
 }

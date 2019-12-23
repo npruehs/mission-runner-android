@@ -14,20 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import de.npruehs.missionrunner.client.model.Account;
 import de.npruehs.missionrunner.client.model.AccountViewModel;
+import de.npruehs.missionrunner.client.model.Resource;
+import de.npruehs.missionrunner.client.model.ResourceStatus;
 
-public class MainFragment extends Fragment implements View.OnClickListener, Observer<Account> {
+public class MainFragment extends Fragment implements View.OnClickListener, Observer<Resource<Account>> {
     @Inject
     AccountViewModel viewModel;
 
     private TextView textViewAccountName;
     private TextView textViewAccountLevel;
     private TextView textViewAccountScore;
+    private ProgressBar progressBar;
 
     private OnMainFragmentInteractionListener listener;
 
@@ -59,6 +64,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Obse
         textViewAccountName = view.findViewById(R.id.textViewAccountName);
         textViewAccountLevel = view.findViewById(R.id.textViewAccountLevelValue);
         textViewAccountScore = view.findViewById(R.id.textViewAccountScoreValue);
+        progressBar = view.findViewById(R.id.progressBar);
 
         viewModel.getAccount().observe(getViewLifecycleOwner(), this);
     }
@@ -94,17 +100,43 @@ public class MainFragment extends Fragment implements View.OnClickListener, Obse
     }
 
     @Override
-    public void onChanged(Account account) {
-        if (textViewAccountName != null) {
-            textViewAccountName.setText(account.getId());
+    public void onChanged(Resource<Account> account) {
+        // Update data.
+        if (account.getData() != null) {
+            if (textViewAccountName != null) {
+                textViewAccountName.setText(account.getData().getId());
+            }
+
+            if (textViewAccountLevel != null) {
+                textViewAccountLevel.setText(Integer.toString(account.getData().getLevel()));
+            }
+
+            if (textViewAccountScore != null) {
+                textViewAccountScore.setText(Integer.toString(account.getData().getScore()));
+            }
         }
 
-        if (textViewAccountLevel != null) {
-            textViewAccountLevel.setText(Integer.toString(account.getLevel()));
-        }
+        // Update loading indicator.
+        switch (account.getStatus()) {
+            case AVAILABLE:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+                break;
 
-        if (textViewAccountScore != null) {
-            textViewAccountScore.setText(Integer.toString(account.getScore()));
+            case PENDING:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case UNAVAILABLE:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                Toast.makeText(getContext(), account.getError(), Toast.LENGTH_LONG).show();
+                break;
         }
     }
 
