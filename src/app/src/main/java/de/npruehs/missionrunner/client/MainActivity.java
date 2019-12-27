@@ -2,6 +2,9 @@ package de.npruehs.missionrunner.client;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -25,24 +28,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
 
     @Override
     public void onShowMissions() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Check what fragment is currently shown, replace if needed.
-            ShowMissionsFragment showMissionsFragment = (ShowMissionsFragment)
-                    getSupportFragmentManager().findFragmentById(R.id.frameLayoutDetails);
-            if (showMissionsFragment == null) {
-                // Make new fragment to show this selection.
-                showMissionsFragment = ShowMissionsFragment.newInstance();
+        View navHostView = findViewById(R.id.nav_host_fragment);
 
-                // Execute a transaction, replacing any existing fragment
-                // with this one inside the frame.
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayoutDetails, showMissionsFragment);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
-            }
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Navigation.findNavController(navHostView).navigate(R.id.showMissionsFragmentLand);
         } else {
-            Intent intent = new Intent(this, ShowMissionsActivity.class);
-            startActivity(intent);
+            NavDirections action = MainFragmentDirections.actionMainFragmentToShowMissionsFragment();
+            Navigation.findNavController(navHostView).navigate(action);
         }
     }
 }
