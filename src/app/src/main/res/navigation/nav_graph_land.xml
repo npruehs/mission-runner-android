@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/showMissionsFragmentLand"
         android:name="de.npruehs.missionrunner.client.ShowMissionsFragment"
-        android:label="fragment_show_missions"
+        android:label="@string/missions_text_header"
         tools:layout="@layout/fragment_show_missions" />
 </navigation>

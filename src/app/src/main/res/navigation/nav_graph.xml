@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="de.npruehs.missionrunner.client.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_showMissionsFragment"
             app:destination="@id/showMissionsFragment"
@@ -21,6 +21,6 @@
     <fragment
         android:id="@+id/showMissionsFragment"
         android:name="de.npruehs.missionrunner.client.ShowMissionsFragment"
-        android:label="fragment_show_missions"
+        android:label="@string/missions_text_header"
         tools:layout="@layout/fragment_show_missions" />
 </navigation>
