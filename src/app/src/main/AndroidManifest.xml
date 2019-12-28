@@ -12,8 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name="de.npruehs.missionrunner.client.MissionRunnerApplication">
-        <activity android:name=".ShowMissionsActivity" android:parentActivityName=".MainActivity">
-        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
