@@ -16,9 +16,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import de.npruehs.missionrunner.client.controller.AccountComponent;
+import de.npruehs.missionrunner.client.controller.ApplicationComponent;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnMainFragmentInteractionListener {
     AccountComponent accountComponent;
+    MissionComponent missionComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -27,8 +30,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        accountComponent = ((MissionRunnerApplication)getApplicationContext())
-                .appComponent.accountComponent().create();
+        ApplicationComponent applicationComponent = ((MissionRunnerApplication)getApplicationContext())
+                .appComponent;
+
+        accountComponent = applicationComponent.accountComponent().create();
+        missionComponent = applicationComponent.missionComponent().create();
 
         setContentView(R.layout.activity_main);
 
