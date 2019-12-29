@@ -62,4 +62,10 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    // RecyclerView
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
+
+    // CardView
+    implementation 'com.android.support:cardview-v7:29.0.0'
 }
