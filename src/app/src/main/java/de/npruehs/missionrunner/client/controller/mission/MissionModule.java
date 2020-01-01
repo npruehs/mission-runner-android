@@ -11,18 +11,12 @@ import dagger.Provides;
 import de.npruehs.missionrunner.client.model.mission.MissionDao;
 import de.npruehs.missionrunner.client.model.mission.MissionDatabase;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(subcomponents = MissionComponent.class)
 public class MissionModule {
     @Singleton
     @Provides
-    public static MissionService provideMissionService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.178.27:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+    public static MissionService provideMissionService(Retrofit retrofit) {
         return retrofit.create(MissionService.class);
     }
 
