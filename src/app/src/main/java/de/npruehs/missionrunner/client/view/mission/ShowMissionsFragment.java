@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import javax.inject.Inject;
 
 import de.npruehs.missionrunner.client.R;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.mission.Mission;
@@ -68,7 +69,13 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MissionComponentProvider)getActivity()).getMissionComponent().inject(this);
+        if (getActivity() instanceof  MissionComponentProvider) {
+            MissionComponent missionComponent = ((MissionComponentProvider)getActivity()).getMissionComponent();
+
+            if (missionComponent != null) {
+                missionComponent.inject(this);
+            }
+        }
     }
 
     @Override
