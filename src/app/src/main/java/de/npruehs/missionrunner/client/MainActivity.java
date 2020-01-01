@@ -42,7 +42,7 @@ public class MainActivity
         appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

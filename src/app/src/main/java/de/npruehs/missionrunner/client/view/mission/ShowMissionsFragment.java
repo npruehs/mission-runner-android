@@ -33,11 +33,6 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
         // Required empty public constructor
     }
 
-    public static ShowMissionsFragment newInstance() {
-        ShowMissionsFragment f = new ShowMissionsFragment();
-        return f;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +90,5 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     @Override
     public void onMissionSelected(Mission mission) {
         Toast.makeText(getContext(), mission.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    public interface OnShowMissionsFragmentInteractionListener {
     }
 }
