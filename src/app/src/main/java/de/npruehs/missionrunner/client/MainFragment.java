@@ -19,9 +19,10 @@ import androidx.lifecycle.Observer;
 
 import javax.inject.Inject;
 
+import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
+import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.account.Account;
 import de.npruehs.missionrunner.client.model.account.AccountViewModel;
-import de.npruehs.missionrunner.client.model.Resource;
 
 public class MainFragment extends Fragment implements Observer<Resource<Account>> {
     @Inject
@@ -69,7 +70,7 @@ public class MainFragment extends Fragment implements Observer<Resource<Account>
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MainActivity)getActivity()).getAccountComponent().inject(this);
+        ((AccountComponentProvider)getActivity()).getAccountComponent().inject(this);
 
         if (context instanceof OnMainFragmentInteractionListener) {
             listener = (OnMainFragmentInteractionListener) context;

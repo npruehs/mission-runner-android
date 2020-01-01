@@ -2,6 +2,10 @@ package de.npruehs.missionrunner.client.view.mission;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,15 +14,10 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import javax.inject.Inject;
 
-import de.npruehs.missionrunner.client.MainActivity;
 import de.npruehs.missionrunner.client.R;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionViewModel;
@@ -69,7 +68,7 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MainActivity)getActivity()).getMissionComponent().inject(this);
+        ((MissionComponentProvider)getActivity()).getMissionComponent().inject(this);
     }
 
     @Override

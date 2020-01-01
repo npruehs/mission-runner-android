@@ -11,11 +11,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import de.npruehs.missionrunner.client.controller.account.AccountComponent;
 import de.npruehs.missionrunner.client.controller.ApplicationComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnMainFragmentInteractionListener {
+public class MainActivity
+        extends AppCompatActivity
+        implements MainFragment.OnMainFragmentInteractionListener, AccountComponentProvider, MissionComponentProvider {
     private AccountComponent accountComponent;
     private MissionComponent missionComponent;
 
