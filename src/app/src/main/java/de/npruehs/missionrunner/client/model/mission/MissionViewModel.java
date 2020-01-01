@@ -12,7 +12,7 @@ import de.npruehs.missionrunner.client.model.Resource;
 @ActivityScope
 public class MissionViewModel extends ViewModel {
     private final MissionRepository missionRepository;
-    private LiveData<Resource<Mission[]>> missions;
+    private final LiveData<Resource<Mission[]>> missions;
 
     @Inject
     public MissionViewModel(MissionRepository missionRepository) {
