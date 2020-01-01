@@ -1,27 +1,27 @@
 package de.npruehs.missionrunner.client;
 
+import android.content.res.Configuration;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.view.View;
-
-import de.npruehs.missionrunner.client.controller.AccountComponent;
 import de.npruehs.missionrunner.client.controller.ApplicationComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnMainFragmentInteractionListener {
-    AccountComponent accountComponent;
-    MissionComponent missionComponent;
+public class MainActivity
+        extends AppCompatActivity
+        implements MainFragment.OnMainFragmentInteractionListener, AccountComponentProvider, MissionComponentProvider {
+    private AccountComponent accountComponent;
+    private MissionComponent missionComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
         appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -65,5 +65,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
             NavDirections action = MainFragmentDirections.actionMainFragmentToShowMissionsFragment();
             navController.navigate(action);
         }
+    }
+
+    public AccountComponent getAccountComponent() {
+        return accountComponent;
+    }
+
+    public MissionComponent getMissionComponent() {
+        return missionComponent;
     }
 }

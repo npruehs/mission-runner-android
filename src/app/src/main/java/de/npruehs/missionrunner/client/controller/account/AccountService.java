@@ -1,6 +1,6 @@
-package de.npruehs.missionrunner.client.controller;
+package de.npruehs.missionrunner.client.controller.account;
 
-import de.npruehs.missionrunner.client.model.Account;
+import de.npruehs.missionrunner.client.model.account.Account;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

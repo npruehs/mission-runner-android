@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 
 public class MissionRecyclerViewAdapter extends RecyclerView.Adapter<MissionRecyclerViewViewHolder> implements View.OnClickListener {
-    private Mission[] missions;
+    private final Mission[] missions;
     private OnMissionSelectListener listener;
 
     public MissionRecyclerViewAdapter(Mission[] missions) {
@@ -27,7 +27,7 @@ public class MissionRecyclerViewAdapter extends RecyclerView.Adapter<MissionRecy
     @Override
     public void onBindViewHolder(@NonNull MissionRecyclerViewViewHolder holder, int position) {
         Mission mission = missions[position];
-        holder.missionCard.setMission(mission);
+        holder.getMissionCard().setMission(mission);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.model;
+package de.npruehs.missionrunner.client.model.account;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

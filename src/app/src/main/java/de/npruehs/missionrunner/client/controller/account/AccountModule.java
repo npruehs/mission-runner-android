@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.controller;
+package de.npruehs.missionrunner.client.controller.account;
 
 import android.app.Application;
 
@@ -8,21 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.npruehs.missionrunner.client.model.AccountDao;
-import de.npruehs.missionrunner.client.model.AccountDatabase;
+import de.npruehs.missionrunner.client.model.account.AccountDao;
+import de.npruehs.missionrunner.client.model.account.AccountDatabase;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(subcomponents = AccountComponent.class)
-class AccountModule {
+public class AccountModule {
     @Singleton
     @Provides
-    public static AccountService provideAccountService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.178.27:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+    public static AccountService provideAccountService(Retrofit retrofit) {
         return retrofit.create(AccountService.class);
     }
 

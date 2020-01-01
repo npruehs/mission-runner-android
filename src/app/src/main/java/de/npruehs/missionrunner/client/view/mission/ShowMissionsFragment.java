@@ -1,7 +1,11 @@
-package de.npruehs.missionrunner.client;
+package de.npruehs.missionrunner.client.view.mission;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,17 +14,14 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import javax.inject.Inject;
 
+import de.npruehs.missionrunner.client.R;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
+import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionViewModel;
-import de.npruehs.missionrunner.client.view.mission.MissionRecyclerViewAdapter;
 
 public class ShowMissionsFragment extends Fragment implements Observer<Resource<Mission[]>>, MissionRecyclerViewAdapter.OnMissionSelectListener {
     @Inject
@@ -30,11 +31,6 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
     public ShowMissionsFragment() {
         // Required empty public constructor
-    }
-
-    public static ShowMissionsFragment newInstance() {
-        ShowMissionsFragment f = new ShowMissionsFragment();
-        return f;
     }
 
     @Override
@@ -68,7 +64,13 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MainActivity)getActivity()).missionComponent.inject(this);
+        if (getActivity() instanceof  MissionComponentProvider) {
+            MissionComponent missionComponent = ((MissionComponentProvider)getActivity()).getMissionComponent();
+
+            if (missionComponent != null) {
+                missionComponent.inject(this);
+            }
+        }
     }
 
     @Override
@@ -88,8 +90,5 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     @Override
     public void onMissionSelected(Mission mission) {
         Toast.makeText(getContext(), mission.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    public interface OnShowMissionsFragmentInteractionListener {
     }
 }

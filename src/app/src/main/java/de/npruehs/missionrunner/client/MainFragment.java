@@ -2,28 +2,28 @@ package de.npruehs.missionrunner.client;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+
 import javax.inject.Inject;
 
-import de.npruehs.missionrunner.client.model.Account;
-import de.npruehs.missionrunner.client.model.AccountViewModel;
+import de.npruehs.missionrunner.client.controller.account.AccountComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
 import de.npruehs.missionrunner.client.model.Resource;
+import de.npruehs.missionrunner.client.model.account.Account;
+import de.npruehs.missionrunner.client.model.account.AccountViewModel;
 
 public class MainFragment extends Fragment implements Observer<Resource<Account>> {
     @Inject
@@ -71,7 +71,13 @@ public class MainFragment extends Fragment implements Observer<Resource<Account>
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MainActivity)getActivity()).accountComponent.inject(this);
+        if (getActivity() instanceof  AccountComponentProvider) {
+            AccountComponent accountComponent = ((AccountComponentProvider)getActivity()).getAccountComponent();
+
+            if (accountComponent != null) {
+                accountComponent.inject(this);
+            }
+        }
 
         if (context instanceof OnMainFragmentInteractionListener) {
             listener = (OnMainFragmentInteractionListener) context;

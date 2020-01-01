@@ -11,9 +11,9 @@ import javax.inject.Singleton;
 
 @Singleton
 public class ApplicationExecutors {
-    private Executor IO;
+    private final Executor IO;
 
-    private Executor main;
+    private final Executor main;
 
     @Inject
     public ApplicationExecutors() {
@@ -30,7 +30,7 @@ public class ApplicationExecutors {
     }
 
     private class MainThreadExecutor implements Executor {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+        private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
         @Override
         public void execute(Runnable command) {
