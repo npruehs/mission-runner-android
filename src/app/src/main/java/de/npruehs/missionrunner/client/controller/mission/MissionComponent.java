@@ -2,7 +2,7 @@ package de.npruehs.missionrunner.client.controller.mission;
 
 import dagger.Subcomponent;
 import de.npruehs.missionrunner.client.ActivityScope;
-import de.npruehs.missionrunner.client.ShowMissionsFragment;
+import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment;
 
 @ActivityScope
 @Subcomponent

@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client;
+package de.npruehs.missionrunner.client.view.mission;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,10 +17,11 @@ import android.widget.Toast;
 
 import javax.inject.Inject;
 
+import de.npruehs.missionrunner.client.MainActivity;
+import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionViewModel;
-import de.npruehs.missionrunner.client.view.mission.MissionRecyclerViewAdapter;
 
 public class ShowMissionsFragment extends Fragment implements Observer<Resource<Mission[]>>, MissionRecyclerViewAdapter.OnMissionSelectListener {
     @Inject
@@ -68,7 +69,7 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        ((MainActivity)getActivity()).missionComponent.inject(this);
+        ((MainActivity)getActivity()).getMissionComponent().inject(this);
     }
 
     @Override

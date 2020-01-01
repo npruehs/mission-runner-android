@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.controller;
+package de.npruehs.missionrunner.client.controller.account;
 
 import dagger.Subcomponent;
 import de.npruehs.missionrunner.client.ActivityScope;

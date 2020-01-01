@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.model;
+package de.npruehs.missionrunner.client.model.account;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

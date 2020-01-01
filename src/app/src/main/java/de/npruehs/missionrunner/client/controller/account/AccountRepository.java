@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.controller;
+package de.npruehs.missionrunner.client.controller.account;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import de.npruehs.missionrunner.client.ApplicationExecutors;
-import de.npruehs.missionrunner.client.model.Account;
-import de.npruehs.missionrunner.client.model.AccountDao;
+import de.npruehs.missionrunner.client.model.account.Account;
+import de.npruehs.missionrunner.client.model.account.AccountDao;
 import de.npruehs.missionrunner.client.model.Resource;
 import retrofit2.Call;
 import retrofit2.Callback;

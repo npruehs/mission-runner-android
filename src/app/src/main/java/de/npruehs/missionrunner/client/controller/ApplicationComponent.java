@@ -6,6 +6,8 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import de.npruehs.missionrunner.client.controller.account.AccountComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountModule;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionModule;
 

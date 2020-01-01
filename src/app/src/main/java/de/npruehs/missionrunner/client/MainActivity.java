@@ -11,13 +11,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import de.npruehs.missionrunner.client.controller.AccountComponent;
+import de.npruehs.missionrunner.client.controller.account.AccountComponent;
 import de.npruehs.missionrunner.client.controller.ApplicationComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnMainFragmentInteractionListener {
-    AccountComponent accountComponent;
-    MissionComponent missionComponent;
+    private AccountComponent accountComponent;
+    private MissionComponent missionComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -61,5 +61,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
             NavDirections action = MainFragmentDirections.actionMainFragmentToShowMissionsFragment();
             navController.navigate(action);
         }
+    }
+
+    public AccountComponent getAccountComponent() {
+        return accountComponent;
+    }
+
+    public MissionComponent getMissionComponent() {
+        return missionComponent;
     }
 }
