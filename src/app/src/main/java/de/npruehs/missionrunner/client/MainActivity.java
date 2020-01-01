@@ -42,12 +42,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMa
         appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        }
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     }
 
     @Override
