@@ -20,23 +20,27 @@ public class AccountRepository {
     private final AccountService accountService;
     private final AccountDao accountDao;
     private final ApplicationExecutors executors;
+    private final AccountIdProvider accountIdProvider;
 
     private final MediatorLiveData<Resource<Account>> account;
 
     @Inject
-    public AccountRepository(AccountService accountService, AccountDao accountDao, ApplicationExecutors executors) {
+    public AccountRepository(AccountService accountService, AccountDao accountDao, ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
         this.accountService = accountService;
         this.accountDao = accountDao;
         this.executors = executors;
+        this.accountIdProvider = accountIdProvider;
 
         this.account = new MediatorLiveData<>();
     }
 
-    public LiveData<Resource<Account>> getAccount(final String id) {
+    public LiveData<Resource<Account>> getAccount() {
+        final String accountId = accountIdProvider.getAccountId();
+
         account.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Account> oldAccountData = accountDao.load(id);
+        final LiveData<Account> oldAccountData = accountDao.load(accountId);
 
         account.addSource(oldAccountData, new Observer<Account>() {
             @Override
@@ -49,7 +53,7 @@ public class AccountRepository {
         });
 
         // Fetch from server.
-        Call<Account> accountCall = accountService.getAccount(id);
+        Call<Account> accountCall = accountService.getAccount(accountId);
         accountCall.enqueue(new Callback<Account>() {
 
             @Override
@@ -64,7 +68,7 @@ public class AccountRepository {
                         executors.main().execute(new Runnable() {
                             @Override
                             public void run() {
-                                final LiveData<Account> newAccountData = accountDao.load(id);
+                                final LiveData<Account> newAccountData = accountDao.load(accountId);
 
                                 account.addSource(newAccountData, new Observer<Account>() {
                                     @Override

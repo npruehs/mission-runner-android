@@ -6,4 +6,6 @@
     <string name="missions_text_header">Missions</string>
     <string name="mission_text_time">Required Time:</string>
     <string name="mission_text_reward">Reward:</string>
+    <string name="preferences_account" translatable="false">de.npruehs.missionrunner.client.preferences.account</string>
+    <string name="preferences_account_id" translatable="false">id</string>
 </resources>

@@ -18,7 +18,7 @@ public class MissionViewModel extends ViewModel {
     public MissionViewModel(MissionRepository missionRepository) {
         this.missionRepository = missionRepository;
 
-        missions = missionRepository.getMissions("A1B2C3");
+        missions = missionRepository.getMissions();
     }
 
     public LiveData<Resource<Mission[]>> getMissions() {

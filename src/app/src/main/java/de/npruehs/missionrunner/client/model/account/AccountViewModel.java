@@ -17,8 +17,7 @@ public class AccountViewModel extends ViewModel {
     @Inject
     public AccountViewModel(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-
-        account = accountRepository.getAccount("A1B2C3");
+        account = accountRepository.getAccount();
     }
 
     public LiveData<Resource<Account>> getAccount() {

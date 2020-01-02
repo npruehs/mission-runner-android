@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import de.npruehs.missionrunner.client.ApplicationExecutors;
+import de.npruehs.missionrunner.client.controller.account.AccountIdProvider;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDao;
@@ -20,19 +21,23 @@ public class MissionRepository {
     private final MissionService missionService;
     private final MissionDao missionDao;
     private final ApplicationExecutors executors;
+    private final AccountIdProvider accountIdProvider;
 
     private final MediatorLiveData<Resource<Mission[]>> missions;
 
     @Inject
-    public MissionRepository(MissionService missionService, MissionDao missionDao, ApplicationExecutors executors) {
+    public MissionRepository(MissionService missionService, MissionDao missionDao, ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
         this.missionService = missionService;
         this.missionDao = missionDao;
         this.executors = executors;
+        this.accountIdProvider = accountIdProvider;
 
         this.missions = new MediatorLiveData<>();
     }
 
-    public LiveData<Resource<Mission[]>> getMissions(final String accountId) {
+    public LiveData<Resource<Mission[]>> getMissions() {
+        final String accountId = accountIdProvider.getAccountId();
+
         missions.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
