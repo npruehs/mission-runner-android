@@ -29,6 +29,8 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
     private RecyclerView recyclerView;
 
+    private OnShowMissionsFragmentInteractionListener listener;
+
     public ShowMissionsFragment() {
         // Required empty public constructor
     }
@@ -71,11 +73,20 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
                 missionComponent.inject(this);
             }
         }
+
+        if (context instanceof OnShowMissionsFragmentInteractionListener) {
+            listener = (OnShowMissionsFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnShowMissionsFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+
+        listener = null;
     }
 
     @Override
@@ -89,6 +100,18 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
     @Override
     public void onMissionSelected(Mission mission) {
-        Toast.makeText(getContext(), mission.getName(), Toast.LENGTH_SHORT).show();
+        if (mission != null) {
+            showMission(mission.getId());
+        }
+    }
+
+    private void showMission(int missionId) {
+        if (listener != null) {
+            listener.onShowMission(missionId);
+        }
+    }
+
+    public interface OnShowMissionsFragmentInteractionListener {
+        void onShowMission(int missionId);
     }
 }

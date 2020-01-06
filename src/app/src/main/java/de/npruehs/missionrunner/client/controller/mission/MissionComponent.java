@@ -2,6 +2,7 @@ package de.npruehs.missionrunner.client.controller.mission;
 
 import dagger.Subcomponent;
 import de.npruehs.missionrunner.client.ActivityScope;
+import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragment;
 import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment;
 
 @ActivityScope
@@ -13,4 +14,5 @@ public interface MissionComponent {
     }
 
     void inject(ShowMissionsFragment showMissionsFragment);
+    void inject(MissionDetailsFragment missionDetailsFragment);
 }

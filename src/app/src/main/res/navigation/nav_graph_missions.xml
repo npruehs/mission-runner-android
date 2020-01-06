@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_missions"
+    app:startDestination="@id/showMissionsFragment">
+    <fragment
+        android:id="@+id/missionDetailsFragment"
+        android:name="de.npruehs.missionrunner.client.view.mission.MissionDetailsFragment"
+        android:label="@string/mission_details_text_header"
+        tools:layout="@layout/fragment_mission_details">
+        <argument
+            android:name="missionId"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/showMissionsFragment"
+        android:name="de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment"
+        android:label="@string/missions_text_header"
+        tools:layout="@layout/fragment_show_missions">
+        <action
+            android:id="@+id/action_showMissionsFragment_to_missionDetailsFragment"
+            app:destination="@id/missionDetailsFragment" />
+    </fragment>
+</navigation>

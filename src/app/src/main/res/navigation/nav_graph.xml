@@ -11,16 +11,8 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_mainFragment_to_showMissionsFragment"
-            app:destination="@id/showMissionsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            android:id="@+id/action_mainFragment_to_nav_graph_missions"
+            app:destination="@id/nav_graph_missions" />
     </fragment>
-    <fragment
-        android:id="@+id/showMissionsFragment"
-        android:name="de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment"
-        android:label="@string/missions_text_header"
-        tools:layout="@layout/fragment_show_missions" />
+    <include app:graph="@navigation/nav_graph_missions" />
 </navigation>

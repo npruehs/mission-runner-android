@@ -17,10 +17,15 @@ import de.npruehs.missionrunner.client.controller.account.AccountComponentProvid
 import de.npruehs.missionrunner.client.controller.character.CharacterComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
+import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment;
+import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragmentDirections;
 
 public class MainActivity
         extends AppCompatActivity
-        implements MainFragment.OnMainFragmentInteractionListener, AccountComponentProvider, MissionComponentProvider {
+        implements MainFragment.OnMainFragmentInteractionListener,
+        ShowMissionsFragment.OnShowMissionsFragmentInteractionListener,
+        AccountComponentProvider,
+        MissionComponentProvider {
     private AccountComponent accountComponent;
     private MissionComponent missionComponent;
     private CharacterComponent characterComponent;
@@ -63,11 +68,19 @@ public class MainActivity
     @Override
     public void onShowMissions() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            navController.navigate(R.id.showMissionsFragmentLand);
+            navController.navigate(R.id.showMissionsFragment);
         } else {
-            NavDirections action = MainFragmentDirections.actionMainFragmentToShowMissionsFragment();
+            NavDirections action = MainFragmentDirections.actionMainFragmentToNavGraphMissions();
             navController.navigate(action);
         }
+    }
+
+    @Override
+    public void onShowMission(int missionId) {
+        ShowMissionsFragmentDirections.ActionShowMissionsFragmentToMissionDetailsFragment action =
+                ShowMissionsFragmentDirections.actionShowMissionsFragmentToMissionDetailsFragment();
+        action.setMissionId(missionId);
+        navController.navigate(action);
     }
 
     public AccountComponent getAccountComponent() {
