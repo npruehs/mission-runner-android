@@ -13,6 +13,9 @@
             android:name="missionId"
             android:defaultValue="0"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_missionDetailsFragment_to_showMissionsFragment"
+            app:destination="@id/showMissionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/showMissionsFragment"

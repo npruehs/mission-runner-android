@@ -17,6 +17,8 @@ import de.npruehs.missionrunner.client.controller.account.AccountComponentProvid
 import de.npruehs.missionrunner.client.controller.character.CharacterComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
+import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragment;
+import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragmentDirections;
 import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment;
 import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragmentDirections;
 
@@ -24,6 +26,7 @@ public class MainActivity
         extends AppCompatActivity
         implements MainFragment.OnMainFragmentInteractionListener,
         ShowMissionsFragment.OnShowMissionsFragmentInteractionListener,
+        MissionDetailsFragment.OnMissionDetailsFragmentInteractionListener,
         AccountComponentProvider,
         MissionComponentProvider {
     private AccountComponent accountComponent;
@@ -81,6 +84,16 @@ public class MainActivity
                 ShowMissionsFragmentDirections.actionShowMissionsFragmentToMissionDetailsFragment();
         action.setMissionId(missionId);
         navController.navigate(action);
+    }
+
+    @Override
+    public void onReturnToMissions() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            navController.navigate(R.id.showMissionsFragment);
+        } else {
+            NavDirections action = MissionDetailsFragmentDirections.actionMissionDetailsFragmentToShowMissionsFragment();
+            navController.navigate(action);
+        }
     }
 
     public AccountComponent getAccountComponent() {

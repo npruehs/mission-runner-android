@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 import javax.inject.Inject;
 
 import de.npruehs.missionrunner.client.ActivityScope;
-import de.npruehs.missionrunner.client.controller.character.CharacterRepository;
 import de.npruehs.missionrunner.client.controller.mission.MissionRepository;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.character.Character;
@@ -16,7 +15,6 @@ import de.npruehs.missionrunner.client.model.character.Character;
 @ActivityScope
 public class MissionDetailsViewModel extends ViewModel {
     private final MissionRepository missionRepository;
-    private final CharacterRepository characterRepository;
 
     private final LiveData<Resource<Mission[]>> missions;
     private final LiveData<Resource<Character[]>> characters;
@@ -24,12 +22,11 @@ public class MissionDetailsViewModel extends ViewModel {
     private final MediatorLiveData<MissionDetails> missionDetails;
 
     @Inject
-    public MissionDetailsViewModel(MissionRepository missionRepository, CharacterRepository characterRepository) {
+    public MissionDetailsViewModel(MissionRepository missionRepository) {
         this.missionRepository = missionRepository;
-        this.characterRepository = characterRepository;
 
         missions = missionRepository.getMissions();
-        characters = characterRepository.getCharacters();
+        characters = missionRepository.getCharacters();
 
         missionDetails = new MediatorLiveData<>();
 
@@ -60,5 +57,9 @@ public class MissionDetailsViewModel extends ViewModel {
 
     public MediatorLiveData<MissionDetails> getMissionDetails() {
         return missionDetails;
+    }
+
+    public void startMission(int missionId, int[] characterIds) {
+        missionRepository.startMission(missionId, characterIds);
     }
 }

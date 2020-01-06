@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -21,12 +23,13 @@ import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.character.Character;
+import de.npruehs.missionrunner.client.model.character.CharacterStatus;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDetails;
 import de.npruehs.missionrunner.client.model.mission.MissionDetailsViewModel;
 import de.npruehs.missionrunner.client.view.character.CharacterRecyclerViewAdapter;
 
-public class MissionDetailsFragment extends Fragment implements Observer<MissionDetails>, CharacterRecyclerViewAdapter.OnCharacterSelectListener {
+public class MissionDetailsFragment extends Fragment implements Observer<MissionDetails>, CharacterRecyclerViewAdapter.OnCharacterSelectListener, View.OnClickListener {
     @Inject
     MissionDetailsViewModel viewModel;
 
@@ -38,6 +41,8 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
 
     private final Vector<Character> assignedCharacters = new Vector<>();
     private final Vector<Character> unassignedCharacters = new Vector<>();
+
+    private OnMissionDetailsFragmentInteractionListener listener;
 
     public MissionDetailsFragment() {}
 
@@ -77,6 +82,13 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewUnassignedCharacters.setLayoutManager(recyclerViewLayoutManager);
 
+        // Set up button listener.
+        FloatingActionButton button = view.findViewById(R.id.floatingActionButtonStart);
+
+        if (button != null) {
+            button.setOnClickListener(this);
+        }
+
         // Bind view to view model.
         viewModel.getMissionDetails().observe(getViewLifecycleOwner(), this);
     }
@@ -92,6 +104,20 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
                 missionComponent.inject(this);
             }
         }
+
+        if (context instanceof OnMissionDetailsFragmentInteractionListener) {
+            listener = (OnMissionDetailsFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnMissionDetailsFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        listener = null;
     }
 
     @Override
@@ -125,14 +151,10 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         unassignedCharacters.clear();
 
         for (Character character : characters) {
-            switch (character.getStatus()) {
-                case IDLE:
-                    unassignedCharacters.add(character);
-                    break;
-
-                case MISSION:
-                    assignedCharacters.add(character);
-                    break;
+            if (character.getStatus() == CharacterStatus.IDLE) {
+                unassignedCharacters.add(character);
+            } else if (character.getMissionId() == missionId) {
+                assignedCharacters.add(character);
             }
         }
 
@@ -162,5 +184,38 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         adapter = new CharacterRecyclerViewAdapter(charactersToShow);
         adapter.setCharacterSelectionListener(this);
         recyclerViewUnassignedCharacters.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.floatingActionButtonStart:
+                startMission();
+                break;
+        }
+    }
+
+    private void startMission() {
+        // Start mission.
+        int[] characterIds = new int[assignedCharacters.size()];
+
+        for (int i = 0; i < assignedCharacters.size(); ++i) {
+            characterIds[i] = assignedCharacters.get(i).getId();
+        }
+
+        viewModel.startMission(missionId, characterIds);
+
+        // Return to mission list.
+        returnToMissions();
+    }
+
+    private void returnToMissions() {
+        if (listener != null) {
+            listener.onReturnToMissions();
+        }
+    }
+
+    public interface OnMissionDetailsFragmentInteractionListener {
+        void onReturnToMissions();
     }
 }

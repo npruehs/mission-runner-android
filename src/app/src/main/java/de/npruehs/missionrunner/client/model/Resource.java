@@ -30,6 +30,10 @@ public class Resource<T>  {
         return new Resource<T>(null, ResourceStatus.UNAVAILABLE, error);
     }
 
+    public static <T> Resource newUnavailableResource(String error, T oldData) {
+        return new Resource<T>(oldData, ResourceStatus.UNAVAILABLE, error);
+    }
+
     public static <T> Resource newPendingResource() {
         return newPendingResource(null);
     }
