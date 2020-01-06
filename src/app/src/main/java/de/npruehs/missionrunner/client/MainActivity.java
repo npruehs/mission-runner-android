@@ -14,6 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 import de.npruehs.missionrunner.client.controller.ApplicationComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
+import de.npruehs.missionrunner.client.controller.character.CharacterComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 
@@ -22,6 +23,7 @@ public class MainActivity
         implements MainFragment.OnMainFragmentInteractionListener, AccountComponentProvider, MissionComponentProvider {
     private AccountComponent accountComponent;
     private MissionComponent missionComponent;
+    private CharacterComponent characterComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -35,6 +37,7 @@ public class MainActivity
 
         accountComponent = applicationComponent.accountComponent().create();
         missionComponent = applicationComponent.missionComponent().create();
+        characterComponent = applicationComponent.characterComponent().create();
 
         setContentView(R.layout.activity_main);
 

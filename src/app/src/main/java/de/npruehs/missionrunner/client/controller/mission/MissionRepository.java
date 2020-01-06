@@ -54,8 +54,8 @@ public class MissionRepository {
         });
 
         // Fetch from server.
-        Call<Mission[]> accountCall = missionService.getMissions(accountId);
-        accountCall.enqueue(new Callback<Mission[]>() {
+        Call<Mission[]> call = missionService.getMissions(accountId);
+        call.enqueue(new Callback<Mission[]>() {
 
             @Override
             public void onResponse(Call<Mission[]> call, final Response<Mission[]> response) {
