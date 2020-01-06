@@ -20,7 +20,7 @@ public class Mission {
     private MissionStatus status;
 
     @TypeConverters(GsonTypeConverter.class)
-    private String[] requirements;
+    private MissionRequirement[] requirements;
 
     private int requiredTime;
 
@@ -58,11 +58,11 @@ public class Mission {
         this.status = status;
     }
 
-    public String[] getRequirements() {
+    public MissionRequirement[] getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(String[] requirements) {
+    public void setRequirements(MissionRequirement[] requirements) {
         this.requirements = requirements;
     }
 

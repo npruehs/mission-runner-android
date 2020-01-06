@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 
 import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.model.mission.Mission;
+import de.npruehs.missionrunner.client.model.mission.MissionRequirement;
 
 public class MissionCard extends CardView {
     private TextView textViewMissionName;
@@ -55,7 +56,7 @@ public class MissionCard extends CardView {
         }
 
         if (textViewMissionRequirements != null) {
-            String[] missionRequirements = mission.getRequirements();
+            MissionRequirement[] missionRequirements = mission.getRequirements();
             StringBuilder missionRequirementsString = new StringBuilder();
 
             for (int i = 0; i < missionRequirements.length; ++i) {
@@ -63,7 +64,12 @@ public class MissionCard extends CardView {
                     missionRequirementsString.append(", ");
                 }
 
-                missionRequirementsString.append(missionRequirements[0]);
+                missionRequirementsString.append(missionRequirements[i].getRequirement());
+
+                if (missionRequirements[i].getCount() > 1) {
+                    missionRequirementsString.append(" x");
+                    missionRequirementsString.append(missionRequirements[i].getCount());
+                }
             }
 
             textViewMissionRequirements.setText(missionRequirementsString.toString());
