@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +36,9 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
 
     private MissionCard missionCard;
     private RecyclerView recyclerViewAssignedCharacters;
+    private TextView textViewUnassignedCharacters;
     private RecyclerView recyclerViewUnassignedCharacters;
+    private FloatingActionButton buttonStart;
 
     private int missionId;
 
@@ -64,6 +67,7 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
 
         // Cache view references.
         missionCard = view.findViewById(R.id.missionCard);
+        textViewUnassignedCharacters = view.findViewById(R.id.textViewUnassignedCharacters);
 
         // Get id of mission to show.
         missionId = MissionDetailsFragmentArgs.fromBundle(getArguments()).getMissionId();
@@ -83,10 +87,10 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         recyclerViewUnassignedCharacters.setLayoutManager(recyclerViewLayoutManager);
 
         // Set up button listener.
-        FloatingActionButton button = view.findViewById(R.id.floatingActionButtonStart);
+        buttonStart = view.findViewById(R.id.floatingActionButtonStart);
 
-        if (button != null) {
-            button.setOnClickListener(this);
+        if (buttonStart != null) {
+            buttonStart.setOnClickListener(this);
         }
 
         // Bind view to view model.
@@ -144,6 +148,13 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         if (missionCard != null) {
             missionCard.setMission(mission);
         }
+
+        boolean canStartMission = !mission.isRunning() && !mission.isFinished();
+        int visibility = canStartMission ? View.VISIBLE : View.GONE;
+
+        textViewUnassignedCharacters.setVisibility(visibility);
+        recyclerViewUnassignedCharacters.setVisibility(visibility);
+        buttonStart.setVisibility(visibility);
     }
 
     private void showCharacters(Character[] characters) {
@@ -163,6 +174,20 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
 
     @Override
     public void onCharacterSelected(Character character) {
+        if (missionCard == null) {
+            return;
+        }
+
+        Mission mission = missionCard.getMission();
+
+        if (mission == null) {
+            return;
+        }
+
+        if (mission.isRunning() || mission.isFinished()) {
+            return;
+        }
+
         if (assignedCharacters.remove(character)) {
             unassignedCharacters.add(character);
         } else if (unassignedCharacters.remove(character)) {
