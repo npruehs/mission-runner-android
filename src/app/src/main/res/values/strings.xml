@@ -11,4 +11,7 @@
     <string name="mission_details_text_header">Mission Details</string>
     <string name="mission_details_text_assigned_characters">Assigned Characters</string>
     <string name="mission_details_text_unassigned_characters">Unassigned Characters</string>
+    <string name="mission_text_status_running">Running</string>
+    <string name="mission_text_status_open">Open</string>
+    <string name="mission_text_status_finished">Finished</string>
 </resources>

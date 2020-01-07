@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -18,6 +21,7 @@ import de.npruehs.missionrunner.client.model.character.Character;
 import de.npruehs.missionrunner.client.model.character.CharacterDao;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDao;
+import de.npruehs.missionrunner.client.model.mission.MissionStatus;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,6 +174,11 @@ public class MissionRepository {
                             for (Mission mission : oldMissionData) {
                                 if (mission.getId() == missionUpdate.getId()) {
                                     mission.setStatus(missionUpdate.getStatus());
+
+                                    if (mission.getStatus() == MissionStatus.RUNNING) {
+                                        mission.setFinishTime(DateTime.now(DateTimeZone.UTC)
+                                                .plusSeconds(mission.getRequiredTime()));
+                                    }
                                 }
                             }
 
