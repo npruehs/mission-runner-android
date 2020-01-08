@@ -100,31 +100,7 @@ public class DataRepository {
 
             @Override
             public void onResponse(Call<Account> call, final Response<Account> response) {
-                executors.IO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Store in local DB.
-                        accountDao.save(response.body());
-
-                        // Fetch again from local DB.
-                        executors.main().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                final LiveData<Account> newAccountData = accountDao.load(accountId);
-
-                                account.addSource(newAccountData, new Observer<Account>() {
-                                    @Override
-                                    public void onChanged(Account a) {
-                                        if (a != null) {
-                                            account.removeSource(newAccountData);
-                                            account.setValue(Resource.newAvailableResource(a));
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+                saveAccount(response.body());
             }
 
             @Override
@@ -300,12 +276,25 @@ public class DataRepository {
     public void finishMission(int missionId) {
         final String accountId = accountIdProvider.getAccountId();
 
+        if (account.getValue() == null) {
+            throw new IllegalStateException("Call getAccount first.");
+        }
+
         if (missions.getValue() == null) {
             throw new IllegalStateException("Call getMissions first.");
         }
 
+        if (characters.getValue() == null) {
+            throw new IllegalStateException("Call getMissions first.");
+        }
+
+        final Account oldAccountData = account.getValue().getData();
         final Mission[] oldMissionData = missions.getValue().getData();
         final Character[] oldCharacterData = characters.getValue().getData();
+
+        if (oldAccountData == null) {
+            throw new IllegalStateException("Call getAccount first.");
+        }
 
         if (oldMissionData == null) {
             throw new IllegalStateException("Call getMissions first.");
@@ -315,6 +304,7 @@ public class DataRepository {
             throw new IllegalStateException("Call getMissions first.");
         }
 
+        account.setValue(Resource.newPendingResource(oldAccountData));
         missions.setValue(Resource.newPendingResource(oldMissionData));
         characters.setValue(Resource.newPendingResource(oldCharacterData));
 
@@ -333,6 +323,16 @@ public class DataRepository {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         final FinishMissionResponse data = response.body().getData();
+
+                        // Update account data.
+                        FinishMissionResponse.AccountUpdate accountUpdate = data.getAccount();
+
+                        if (accountUpdate != null) {
+                            oldAccountData.setLevel(accountUpdate.getLevel());
+                            oldAccountData.setScore(accountUpdate.getScore());
+
+                            saveAccount(oldAccountData);
+                        }
 
                         // Update mission data.
                         FinishMissionResponse.MissionUpdate missionUpdate = data.getMissions();
@@ -387,6 +387,34 @@ public class DataRepository {
             @Override
             public void onFailure(Call<NetworkResponse<FinishMissionResponse>> call, Throwable t) {
                 missions.setValue(Resource.newUnavailableResource(t.getMessage(), oldMissionData));
+            }
+        });
+    }
+
+    private void saveAccount(final Account newAccount) {
+        executors.IO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Store in local DB.
+                accountDao.save(newAccount);
+
+                // Fetch again from local DB.
+                executors.main().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final LiveData<Account> newAccountData = accountDao.load(newAccount.getId());
+
+                        account.addSource(newAccountData, new Observer<Account>() {
+                            @Override
+                            public void onChanged(Account a) {
+                                if (a != null) {
+                                    account.removeSource(newAccountData);
+                                    account.setValue(Resource.newAvailableResource(a));
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
     }
