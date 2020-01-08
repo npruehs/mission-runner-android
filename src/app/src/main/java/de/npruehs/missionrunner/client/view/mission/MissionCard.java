@@ -10,14 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
-
 import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionRequirement;
-import de.npruehs.missionrunner.client.model.mission.MissionStatus;
 
 public class MissionCard extends CardView {
     private TextView textViewMissionName;
@@ -29,6 +24,8 @@ public class MissionCard extends CardView {
     private Mission mission;
 
     private CountDownTimer missionCountdown;
+
+    private OnMissionFinishListener listener;
 
     public MissionCard(@NonNull Context context) {
         super(context);
@@ -88,8 +85,6 @@ public class MissionCard extends CardView {
                 case RUNNING:
                     textViewMissionTime.setText(Integer.toString(mission.getRequiredTime()));
 
-                    final Mission currentMission = mission;
-
                     if (missionCountdown != null) {
                         missionCountdown.cancel();
                     }
@@ -105,6 +100,10 @@ public class MissionCard extends CardView {
                             textViewMissionTime.setText("0");
 
                             updateStatus();
+
+                            if (listener != null) {
+                                listener.onMissionFinished(mission);
+                            }
                         }
                     };
                     missionCountdown.start();
@@ -121,6 +120,10 @@ public class MissionCard extends CardView {
         }
 
         updateStatus();
+    }
+
+    public void setMissionFinishedListener(OnMissionFinishListener listener) {
+        this.listener = listener;
     }
 
     private void inflateMissionCard(Context context) {
@@ -147,5 +150,9 @@ public class MissionCard extends CardView {
         } else {
             textViewMissionStatus.setText(getContext().getString(R.string.mission_text_status_open));
         }
+    }
+
+    public interface OnMissionFinishListener {
+        void onMissionFinished(Mission mission);
     }
 }

@@ -30,7 +30,12 @@ import de.npruehs.missionrunner.client.model.mission.MissionDetails;
 import de.npruehs.missionrunner.client.model.mission.MissionDetailsViewModel;
 import de.npruehs.missionrunner.client.view.character.CharacterRecyclerViewAdapter;
 
-public class MissionDetailsFragment extends Fragment implements Observer<MissionDetails>, CharacterRecyclerViewAdapter.OnCharacterSelectListener, View.OnClickListener {
+public class MissionDetailsFragment
+        extends Fragment
+        implements Observer<MissionDetails>,
+        CharacterRecyclerViewAdapter.OnCharacterSelectListener,
+        View.OnClickListener,
+        MissionCard.OnMissionFinishListener {
     @Inject
     MissionDetailsViewModel viewModel;
 
@@ -39,6 +44,7 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
     private TextView textViewUnassignedCharacters;
     private RecyclerView recyclerViewUnassignedCharacters;
     private FloatingActionButton buttonStart;
+    private FloatingActionButton buttonFinish;
 
     private int missionId;
 
@@ -86,13 +92,22 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewUnassignedCharacters.setLayoutManager(recyclerViewLayoutManager);
 
-        // Set up button listener.
+        // Set up button listeners.
         buttonStart = view.findViewById(R.id.floatingActionButtonStart);
+        buttonFinish = view.findViewById(R.id.floatingActionButtonFinish);
 
         if (buttonStart != null) {
             buttonStart.setOnClickListener(this);
         }
 
+        if (buttonFinish != null) {
+            buttonFinish.setOnClickListener(this);
+        }
+
+        // Set up mission listener.
+        if (missionCard != null) {
+            missionCard.setMissionFinishedListener(this);
+        }
         // Bind view to view model.
         viewModel.getMissionDetails().observe(getViewLifecycleOwner(), this);
     }
@@ -150,11 +165,11 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         }
 
         boolean canStartMission = !mission.isRunning() && !mission.isFinished();
-        int visibility = canStartMission ? View.VISIBLE : View.GONE;
 
-        textViewUnassignedCharacters.setVisibility(visibility);
-        recyclerViewUnassignedCharacters.setVisibility(visibility);
-        buttonStart.setVisibility(visibility);
+        textViewUnassignedCharacters.setVisibility(canStartMission ? View.VISIBLE : View.GONE);
+        recyclerViewUnassignedCharacters.setVisibility(canStartMission ? View.VISIBLE : View.GONE);
+
+        updateButtons();
     }
 
     private void showCharacters(Character[] characters) {
@@ -217,7 +232,16 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
             case R.id.floatingActionButtonStart:
                 startMission();
                 break;
+
+            case R.id.floatingActionButtonFinish:
+                finishMission();
+                break;
         }
+    }
+
+    @Override
+    public void onMissionFinished(Mission mission) {
+        updateButtons();
     }
 
     private void startMission() {
@@ -234,9 +258,37 @@ public class MissionDetailsFragment extends Fragment implements Observer<Mission
         returnToMissions();
     }
 
+    private void finishMission() {
+        // Return to mission list.
+        returnToMissions();
+    }
+
     private void returnToMissions() {
         if (listener != null) {
             listener.onReturnToMissions();
+        }
+    }
+
+    private void updateButtons() {
+        if (missionCard == null) {
+            return;
+        }
+
+        Mission mission = missionCard.getMission();
+
+        if (mission == null) {
+            return;
+        }
+
+        if (mission.isRunning()) {
+            buttonStart.setVisibility(View.GONE);
+            buttonFinish.setVisibility(View.GONE);
+        } else if (mission.isFinished()) {
+            buttonStart.setVisibility(View.GONE);
+            buttonFinish.setVisibility(View.VISIBLE);
+        } else {
+            buttonStart.setVisibility(View.VISIBLE);
+            buttonFinish.setVisibility(View.GONE);
         }
     }
 
