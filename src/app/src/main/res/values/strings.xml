@@ -15,4 +15,5 @@
     <string name="mission_text_status_open">Open</string>
     <string name="mission_text_status_finished">Finished</string>
     <string name="main_button_home">Home</string>
+    <string name="error_mission_requirements_not_met">Mission requirements not met.</string>
 </resources>

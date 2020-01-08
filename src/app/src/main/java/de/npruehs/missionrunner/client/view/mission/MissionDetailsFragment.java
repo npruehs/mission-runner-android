@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -24,10 +26,12 @@ import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.character.Character;
+import de.npruehs.missionrunner.client.model.character.CharacterSkill;
 import de.npruehs.missionrunner.client.model.character.CharacterStatus;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDetails;
 import de.npruehs.missionrunner.client.model.mission.MissionDetailsViewModel;
+import de.npruehs.missionrunner.client.model.mission.MissionRequirement;
 import de.npruehs.missionrunner.client.view.character.CharacterRecyclerViewAdapter;
 
 public class MissionDetailsFragment
@@ -245,6 +249,12 @@ public class MissionDetailsFragment
     }
 
     private void startMission() {
+        if (!canStartMission()) {
+            Snackbar.make(buttonStart, R.string.error_mission_requirements_not_met, Snackbar.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
         // Start mission.
         int[] characterIds = new int[assignedCharacters.size()];
 
@@ -293,6 +303,44 @@ public class MissionDetailsFragment
             buttonStart.setVisibility(View.VISIBLE);
             buttonFinish.setVisibility(View.GONE);
         }
+    }
+
+    private boolean canStartMission() {
+        // Get mission requirements.
+        Mission mission = missionCard.getMission();
+
+        if (mission == null) {
+            return false;
+        }
+
+        HashMap<String, Integer> requirements = new HashMap<>();
+
+        for (MissionRequirement requirement : mission.getRequirements()) {
+            requirements.put(requirement.getRequirement(), requirement.getCount());
+        }
+
+        // Apply character skills.
+        for (Character character : assignedCharacters) {
+            for (CharacterSkill skill : character.getSkills()) {
+                if (requirements.containsKey(skill.getSkill())) {
+                    Integer requiredSkills = requirements.get(skill.getSkill());
+
+                    if (requiredSkills > 0) {
+                        requiredSkills -= skill.getCount();
+                        requirements.put(skill.getSkill(), requiredSkills);
+                    }
+                }
+            }
+        }
+
+        // Check if all requirements are met.
+        for (Integer requiredSkills : requirements.values()) {
+            if (requiredSkills > 0){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public interface OnMissionDetailsFragmentInteractionListener {
