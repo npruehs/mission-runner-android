@@ -14,14 +14,24 @@ import androidx.navigation.ui.NavigationUI;
 import de.npruehs.missionrunner.client.controller.ApplicationComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
+import de.npruehs.missionrunner.client.controller.character.CharacterComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
+import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragment;
+import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragmentDirections;
+import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragment;
+import de.npruehs.missionrunner.client.view.mission.ShowMissionsFragmentDirections;
 
 public class MainActivity
         extends AppCompatActivity
-        implements MainFragment.OnMainFragmentInteractionListener, AccountComponentProvider, MissionComponentProvider {
+        implements MainFragment.OnMainFragmentInteractionListener,
+        ShowMissionsFragment.OnShowMissionsFragmentInteractionListener,
+        MissionDetailsFragment.OnMissionDetailsFragmentInteractionListener,
+        AccountComponentProvider,
+        MissionComponentProvider {
     private AccountComponent accountComponent;
     private MissionComponent missionComponent;
+    private CharacterComponent characterComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -35,6 +45,7 @@ public class MainActivity
 
         accountComponent = applicationComponent.accountComponent().create();
         missionComponent = applicationComponent.missionComponent().create();
+        characterComponent = applicationComponent.characterComponent().create();
 
         setContentView(R.layout.activity_main);
 
@@ -58,11 +69,37 @@ public class MainActivity
     }
 
     @Override
+    public void onShowHome() {
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            NavDirections action = NavGraphDirections.actionGlobalMainFragment();
+            navController.navigate(action);
+        }
+    }
+
+    @Override
     public void onShowMissions() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            navController.navigate(R.id.showMissionsFragmentLand);
+            navController.navigate(R.id.showMissionsFragment);
         } else {
-            NavDirections action = MainFragmentDirections.actionMainFragmentToShowMissionsFragment();
+            NavDirections action = MainFragmentDirections.actionMainFragmentToNavGraphMissions();
+            navController.navigate(action);
+        }
+    }
+
+    @Override
+    public void onShowMission(int missionId) {
+        ShowMissionsFragmentDirections.ActionShowMissionsFragmentToMissionDetailsFragment action =
+                ShowMissionsFragmentDirections.actionShowMissionsFragmentToMissionDetailsFragment();
+        action.setMissionId(missionId);
+        navController.navigate(action);
+    }
+
+    @Override
+    public void onReturnToMissions() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            navController.navigate(R.id.showMissionsFragment);
+        } else {
+            NavDirections action = MissionDetailsFragmentDirections.actionMissionDetailsFragmentToShowMissionsFragment();
             navController.navigate(action);
         }
     }

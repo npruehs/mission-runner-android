@@ -32,6 +32,6 @@
 
         app:layout_constraintStart_toEndOf="@+id/fragmentMain"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:navGraph="@navigation/nav_graph_land" />
+        app:navGraph="@navigation/nav_graph_missions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

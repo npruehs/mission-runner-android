@@ -8,4 +8,12 @@
     <string name="mission_text_reward">Reward:</string>
     <string name="preferences_account" translatable="false">de.npruehs.missionrunner.client.preferences.account</string>
     <string name="preferences_account_id" translatable="false">id</string>
+    <string name="mission_details_text_header">Mission Details</string>
+    <string name="mission_details_text_assigned_characters">Assigned Characters</string>
+    <string name="mission_details_text_unassigned_characters">Unassigned Characters</string>
+    <string name="mission_text_status_running">Running</string>
+    <string name="mission_text_status_open">Open</string>
+    <string name="mission_text_status_finished">Finished</string>
+    <string name="main_button_home">Home</string>
+    <string name="error_mission_requirements_not_met">Mission requirements not met.</string>
 </resources>

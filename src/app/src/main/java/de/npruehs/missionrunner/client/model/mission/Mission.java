@@ -4,6 +4,11 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
+
+import de.npruehs.missionrunner.client.model.DateTimeTypeConverter;
 import de.npruehs.missionrunner.client.model.EnumTypeConverter;
 import de.npruehs.missionrunner.client.model.GsonTypeConverter;
 
@@ -20,11 +25,14 @@ public class Mission {
     private MissionStatus status;
 
     @TypeConverters(GsonTypeConverter.class)
-    private String[] requirements;
+    private MissionRequirement[] requirements;
 
     private int requiredTime;
 
     private int reward;
+
+    @TypeConverters(DateTimeTypeConverter.class)
+    private DateTime finishTime;
 
     public int getId() {
         return id;
@@ -58,11 +66,11 @@ public class Mission {
         this.status = status;
     }
 
-    public String[] getRequirements() {
+    public MissionRequirement[] getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(String[] requirements) {
+    public void setRequirements(MissionRequirement[] requirements) {
         this.requirements = requirements;
     }
 
@@ -80,5 +88,27 @@ public class Mission {
 
     public void setReward(int reward) {
         this.reward = reward;
+    }
+
+    public DateTime getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(DateTime finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public int getRemainingSeconds() {
+        Period remainingTime = new Period(DateTime.now(DateTimeZone.UTC), getFinishTime());
+        return Math.max(remainingTime.getSeconds(), 0);
+    }
+
+    public boolean isRunning() {
+        return getStatus() == MissionStatus.RUNNING && getRemainingSeconds() > 0;
+    }
+
+    public boolean isFinished() {
+        return getStatus() == MissionStatus.FINISHED ||
+                (getStatus() == MissionStatus.RUNNING && getRemainingSeconds() <= 0);
     }
 }

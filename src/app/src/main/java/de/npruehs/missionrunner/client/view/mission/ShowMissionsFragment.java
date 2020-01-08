@@ -3,6 +3,9 @@ package de.npruehs.missionrunner.client.view.mission;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -29,6 +32,8 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
     private RecyclerView recyclerView;
 
+    private OnShowMissionsFragmentInteractionListener listener;
+
     public ShowMissionsFragment() {
         // Required empty public constructor
     }
@@ -36,6 +41,8 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -71,11 +78,38 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
                 missionComponent.inject(this);
             }
         }
+
+        if (context instanceof OnShowMissionsFragmentInteractionListener) {
+            listener = (OnShowMissionsFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnShowMissionsFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+
+        listener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_missions, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                showHome();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -89,6 +123,25 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
     @Override
     public void onMissionSelected(Mission mission) {
-        Toast.makeText(getContext(), mission.getName(), Toast.LENGTH_SHORT).show();
+        if (mission != null) {
+            showMission(mission.getId());
+        }
+    }
+
+    private void showHome() {
+        if (listener != null) {
+            listener.onShowHome();
+        }
+    }
+
+    private void showMission(int missionId) {
+        if (listener != null) {
+            listener.onShowMission(missionId);
+        }
+    }
+
+    public interface OnShowMissionsFragmentInteractionListener {
+        void onShowHome();
+        void onShowMission(int missionId);
     }
 }
