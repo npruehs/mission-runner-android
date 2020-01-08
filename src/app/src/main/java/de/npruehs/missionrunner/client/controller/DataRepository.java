@@ -1,4 +1,4 @@
-package de.npruehs.missionrunner.client.controller.mission;
+package de.npruehs.missionrunner.client.controller;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -15,13 +15,17 @@ import javax.inject.Singleton;
 
 import de.npruehs.missionrunner.client.ApplicationExecutors;
 import de.npruehs.missionrunner.client.controller.account.AccountIdProvider;
+import de.npruehs.missionrunner.client.controller.account.AccountService;
 import de.npruehs.missionrunner.client.controller.character.CharacterService;
+import de.npruehs.missionrunner.client.controller.mission.MissionService;
 import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionRequest;
 import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionResponse;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionRequest;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionResponse;
 import de.npruehs.missionrunner.client.controller.net.NetworkResponse;
 import de.npruehs.missionrunner.client.model.Resource;
+import de.npruehs.missionrunner.client.model.account.Account;
+import de.npruehs.missionrunner.client.model.account.AccountDao;
 import de.npruehs.missionrunner.client.model.character.Character;
 import de.npruehs.missionrunner.client.model.character.CharacterDao;
 import de.npruehs.missionrunner.client.model.mission.Mission;
@@ -32,7 +36,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton
-public class MissionRepository {
+public class DataRepository {
+    private final AccountService accountService;
+    private final AccountDao accountDao;
+
     private final MissionService missionService;
     private final MissionDao missionDao;
 
@@ -42,11 +49,18 @@ public class MissionRepository {
     private final ApplicationExecutors executors;
     private final AccountIdProvider accountIdProvider;
 
+    private final MediatorLiveData<Resource<Account>> account;
     private final MediatorLiveData<Resource<Mission[]>> missions;
     private final MediatorLiveData<Resource<Character[]>> characters;
 
     @Inject
-    public MissionRepository(MissionService missionService, MissionDao missionDao, CharacterService characterService, CharacterDao characterDao, ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
+    public DataRepository(AccountService accountService, AccountDao accountDao,
+                          MissionService missionService, MissionDao missionDao,
+                          CharacterService characterService, CharacterDao characterDao,
+                          ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
+        this.accountService = accountService;
+        this.accountDao = accountDao;
+
         this.missionService = missionService;
         this.missionDao = missionDao;
 
@@ -56,8 +70,70 @@ public class MissionRepository {
         this.executors = executors;
         this.accountIdProvider = accountIdProvider;
 
+        this.account = new MediatorLiveData<>();
         this.missions = new MediatorLiveData<>();
         this.characters = new MediatorLiveData<>();
+    }
+
+
+    public LiveData<Resource<Account>> getAccount() {
+        final String accountId = accountIdProvider.getAccountId();
+
+        account.setValue(Resource.newPendingResource());
+
+        // Fetch from local DB.
+        final LiveData<Account> oldAccountData = accountDao.load(accountId);
+
+        account.addSource(oldAccountData, new Observer<Account>() {
+            @Override
+            public void onChanged(Account a) {
+                if (a != null) {
+                    account.removeSource(oldAccountData);
+                    account.setValue(Resource.newPendingResource(a));
+                }
+            }
+        });
+
+        // Fetch from server.
+        Call<Account> accountCall = accountService.getAccount(accountId);
+        accountCall.enqueue(new Callback<Account>() {
+
+            @Override
+            public void onResponse(Call<Account> call, final Response<Account> response) {
+                executors.IO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Store in local DB.
+                        accountDao.save(response.body());
+
+                        // Fetch again from local DB.
+                        executors.main().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                final LiveData<Account> newAccountData = accountDao.load(accountId);
+
+                                account.addSource(newAccountData, new Observer<Account>() {
+                                    @Override
+                                    public void onChanged(Account a) {
+                                        if (a != null) {
+                                            account.removeSource(newAccountData);
+                                            account.setValue(Resource.newAvailableResource(a));
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                account.setValue(Resource.newUnavailableResource(t.getMessage()));
+            }
+        });
+
+        return account;
     }
 
     public LiveData<Resource<Mission[]>> getMissions() {

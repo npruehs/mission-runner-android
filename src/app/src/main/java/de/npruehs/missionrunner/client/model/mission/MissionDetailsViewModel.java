@@ -8,13 +8,13 @@ import androidx.lifecycle.ViewModel;
 import javax.inject.Inject;
 
 import de.npruehs.missionrunner.client.ActivityScope;
-import de.npruehs.missionrunner.client.controller.mission.MissionRepository;
+import de.npruehs.missionrunner.client.controller.DataRepository;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.character.Character;
 
 @ActivityScope
 public class MissionDetailsViewModel extends ViewModel {
-    private final MissionRepository missionRepository;
+    private final DataRepository missionRepository;
 
     private final LiveData<Resource<Mission[]>> missions;
     private final LiveData<Resource<Character[]>> characters;
@@ -22,7 +22,7 @@ public class MissionDetailsViewModel extends ViewModel {
     private final MediatorLiveData<MissionDetails> missionDetails;
 
     @Inject
-    public MissionDetailsViewModel(MissionRepository missionRepository) {
+    public MissionDetailsViewModel(DataRepository missionRepository) {
         this.missionRepository = missionRepository;
 
         missions = missionRepository.getMissions();
