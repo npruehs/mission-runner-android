@@ -229,12 +229,18 @@ public class MissionRepository {
         }
 
         final Mission[] oldMissionData = missions.getValue().getData();
+        final Character[] oldCharacterData = characters.getValue().getData();
 
         if (oldMissionData == null) {
             throw new IllegalStateException("Call getMissions first.");
         }
 
+        if (oldCharacterData == null) {
+            throw new IllegalStateException("Call getMissions first.");
+        }
+
         missions.setValue(Resource.newPendingResource(oldMissionData));
+        characters.setValue(Resource.newPendingResource(oldCharacterData));
 
         final ArrayList<Mission> missionList = new ArrayList<>(Arrays.asList(oldMissionData));
 
@@ -276,6 +282,21 @@ public class MissionRepository {
                             Mission[] newMissions = new Mission[missionList.size()];
                             missionList.toArray(newMissions);
                             saveMissions(accountId, newMissions);
+                        }
+
+                        // Update character data.
+                        FinishMissionResponse.CharacterUpdate[] characterUpdates = data.getCharacters();
+
+                        if (characterUpdates != null) {
+                            for (Character character : oldCharacterData) {
+                                for (FinishMissionResponse.CharacterUpdate characterUpdate : characterUpdates) {
+                                    if (character.getId() == characterUpdate.getId()) {
+                                        character.setStatus(characterUpdate.getStatus());
+                                    }
+                                }
+                            }
+
+                            saveCharacters(accountId, oldCharacterData);
                         }
                     } else {
                         // TODO(np): Localize error code.

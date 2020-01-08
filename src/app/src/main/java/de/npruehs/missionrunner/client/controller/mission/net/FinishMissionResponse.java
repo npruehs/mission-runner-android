@@ -1,10 +1,12 @@
 package de.npruehs.missionrunner.client.controller.mission.net;
 
+import de.npruehs.missionrunner.client.model.character.CharacterStatus;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 
 public class FinishMissionResponse {
     private MissionUpdate missions;
     private AccountUpdate account;
+    private CharacterUpdate[] characters;
 
     public MissionUpdate getMissions() {
         return missions;
@@ -20,6 +22,14 @@ public class FinishMissionResponse {
 
     public void setAccount(AccountUpdate account) {
         this.account = account;
+    }
+
+    public CharacterUpdate[] getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(CharacterUpdate[] characters) {
+        this.characters = characters;
     }
 
     public static class MissionUpdate {
@@ -61,6 +71,36 @@ public class FinishMissionResponse {
 
         public void setLevel(int level) {
             this.level = level;
+        }
+    }
+
+    public static class CharacterUpdate {
+        private int id;
+        private CharacterStatus status;
+        private int missionId;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public CharacterStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(CharacterStatus status) {
+            this.status = status;
+        }
+
+        public int getMissionId() {
+            return missionId;
+        }
+
+        public void setMissionId(int missionId) {
+            this.missionId = missionId;
         }
     }
 }
