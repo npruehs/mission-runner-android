@@ -89,7 +89,7 @@ public class MissionCard extends CardView {
                         missionCountdown.cancel();
                     }
 
-                    missionCountdown = new CountDownTimer(mission.getRequiredTime() * 1000, 1000) {
+                    missionCountdown = new CountDownTimer(mission.getRemainingSeconds() * 1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             textViewMissionTime.setText(Integer.toString(mission.getRemainingSeconds()));
