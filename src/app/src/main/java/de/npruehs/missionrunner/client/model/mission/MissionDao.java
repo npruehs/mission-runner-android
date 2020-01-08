@@ -10,10 +10,10 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface MissionDao {
     @Insert(onConflict = REPLACE)
-    void save(Mission[] missions);
+    void insert(Mission[] missions);
 
     @Query("SELECT * FROM mission WHERE accountId = :accountId")
-    LiveData<Mission[]> load(String accountId);
+    LiveData<Mission[]> get(String accountId);
 
     @Query("DELETE FROM mission")
     void clear();

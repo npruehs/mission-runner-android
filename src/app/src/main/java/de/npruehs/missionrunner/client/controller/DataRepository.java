@@ -82,7 +82,7 @@ public class DataRepository {
         account.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Account> oldAccountData = accountDao.load(accountId);
+        final LiveData<Account> oldAccountData = accountDao.get(accountId);
 
         account.addSource(oldAccountData, new Observer<Account>() {
             @Override
@@ -118,7 +118,7 @@ public class DataRepository {
         missions.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Mission[]> oldMissionsData = missionDao.load(accountId);
+        final LiveData<Mission[]> oldMissionsData = missionDao.get(accountId);
 
         missions.addSource(oldMissionsData, new Observer<Mission[]>() {
             @Override
@@ -154,7 +154,7 @@ public class DataRepository {
         characters.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Character[]> oldData = characterDao.load(accountId);
+        final LiveData<Character[]> oldData = characterDao.get(accountId);
 
         characters.addSource(oldData, new Observer<Character[]>() {
             @Override
@@ -396,13 +396,13 @@ public class DataRepository {
             @Override
             public void run() {
                 // Store in local DB.
-                accountDao.save(newAccount);
+                accountDao.insert(newAccount);
 
                 // Fetch again from local DB.
                 executors.main().execute(new Runnable() {
                     @Override
                     public void run() {
-                        final LiveData<Account> newAccountData = accountDao.load(newAccount.getId());
+                        final LiveData<Account> newAccountData = accountDao.get(newAccount.getId());
 
                         account.addSource(newAccountData, new Observer<Account>() {
                             @Override
@@ -425,13 +425,13 @@ public class DataRepository {
             public void run() {
                 // Store in local DB.
                 missionDao.clear();
-                missionDao.save(newMissions);
+                missionDao.insert(newMissions);
 
                 // Fetch again from local DB (single source of truth).
                 executors.main().execute(new Runnable() {
                     @Override
                     public void run() {
-                        final LiveData<Mission[]> newMissionData = missionDao.load(accountId);
+                        final LiveData<Mission[]> newMissionData = missionDao.get(accountId);
 
                         missions.addSource(newMissionData, new Observer<Mission[]>() {
                             @Override
@@ -453,13 +453,13 @@ public class DataRepository {
             @Override
             public void run() {
                 // Store in local DB.
-                characterDao.save(newCharacters);
+                characterDao.insert(newCharacters);
 
                 // Fetch again from local DB (single source of truth).
                 executors.main().execute(new Runnable() {
                     @Override
                     public void run() {
-                        final LiveData<Character[]> newData = characterDao.load(accountId);
+                        final LiveData<Character[]> newData = characterDao.get(accountId);
 
                         characters.addSource(newData, new Observer<Character[]>() {
                             @Override

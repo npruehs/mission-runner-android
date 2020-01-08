@@ -10,8 +10,8 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface AccountDao {
     @Insert(onConflict = REPLACE)
-    void save(Account account);
+    void insert(Account account);
 
     @Query("SELECT * FROM account WHERE id = :id")
-    LiveData<Account> load(String id);
+    LiveData<Account> get(String id);
 }
