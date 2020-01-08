@@ -14,4 +14,7 @@ public interface MissionDao {
 
     @Query("SELECT * FROM mission WHERE accountId = :accountId")
     LiveData<Mission[]> load(String accountId);
+
+    @Query("DELETE FROM mission")
+    void clear();
 }

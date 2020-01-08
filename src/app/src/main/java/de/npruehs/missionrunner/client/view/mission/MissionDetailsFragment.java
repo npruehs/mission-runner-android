@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -48,8 +48,8 @@ public class MissionDetailsFragment
 
     private int missionId;
 
-    private final Vector<Character> assignedCharacters = new Vector<>();
-    private final Vector<Character> unassignedCharacters = new Vector<>();
+    private final ArrayList<Character> assignedCharacters = new ArrayList<>();
+    private final ArrayList<Character> unassignedCharacters = new ArrayList<>();
 
     private OnMissionDetailsFragmentInteractionListener listener;
 
@@ -259,6 +259,9 @@ public class MissionDetailsFragment
     }
 
     private void finishMission() {
+        // Finish mission.
+        viewModel.finishMission(missionId);
+
         // Return to mission list.
         returnToMissions();
     }

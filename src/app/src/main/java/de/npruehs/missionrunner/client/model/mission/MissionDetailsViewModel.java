@@ -62,4 +62,8 @@ public class MissionDetailsViewModel extends ViewModel {
     public void startMission(int missionId, int[] characterIds) {
         missionRepository.startMission(missionId, characterIds);
     }
+
+    public void finishMission(int missionId) {
+        missionRepository.finishMission(missionId);
+    }
 }

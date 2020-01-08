@@ -1,5 +1,7 @@
 package de.npruehs.missionrunner.client.controller.mission;
 
+import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionRequest;
+import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionResponse;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionRequest;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionResponse;
 import de.npruehs.missionrunner.client.controller.net.NetworkResponse;
@@ -16,4 +18,7 @@ public interface MissionService {
 
     @POST("missions/start")
     Call<NetworkResponse<StartMissionResponse>> startMission(@Body StartMissionRequest request);
+
+    @POST("missions/finish")
+    Call<NetworkResponse<FinishMissionResponse>> finishMission(@Body FinishMissionRequest request);
 }

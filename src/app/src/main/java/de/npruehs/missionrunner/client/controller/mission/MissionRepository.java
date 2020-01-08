@@ -7,12 +7,17 @@ import androidx.lifecycle.Observer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import de.npruehs.missionrunner.client.ApplicationExecutors;
 import de.npruehs.missionrunner.client.controller.account.AccountIdProvider;
 import de.npruehs.missionrunner.client.controller.character.CharacterService;
+import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionRequest;
+import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionResponse;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionRequest;
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionResponse;
 import de.npruehs.missionrunner.client.controller.net.NetworkResponse;
@@ -216,11 +221,85 @@ public class MissionRepository {
         });
     }
 
+    public void finishMission(int missionId) {
+        final String accountId = accountIdProvider.getAccountId();
+
+        if (missions.getValue() == null) {
+            throw new IllegalStateException("Call getMissions first.");
+        }
+
+        final Mission[] oldMissionData = missions.getValue().getData();
+
+        if (oldMissionData == null) {
+            throw new IllegalStateException("Call getMissions first.");
+        }
+
+        missions.setValue(Resource.newPendingResource(oldMissionData));
+
+        final ArrayList<Mission> missionList = new ArrayList<>(Arrays.asList(oldMissionData));
+
+        // Send request.
+        final FinishMissionRequest request = new FinishMissionRequest();
+        request.setAccountId(accountId);
+        request.setMissionId(missionId);
+
+        Call<NetworkResponse<FinishMissionResponse>> call = missionService.finishMission(request);
+        call.enqueue(new Callback<NetworkResponse<FinishMissionResponse>>() {
+
+            @Override
+            public void onResponse(Call<NetworkResponse<FinishMissionResponse>> call, final Response<NetworkResponse<FinishMissionResponse>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        final FinishMissionResponse data = response.body().getData();
+
+                        // Update mission data.
+                        FinishMissionResponse.MissionUpdate missionUpdate = data.getMissions();
+
+                        if (missionUpdate != null) {
+                            // Remove missions.
+                            for (int i = missionList.size() - 1; i >= 0; --i) {
+                                Mission oldMission = missionList.get(i);
+
+                                for (int j = 0; j < missionUpdate.getRemovedMissions().length; ++j) {
+                                    if (oldMission.getId() == missionUpdate.getRemovedMissions()[j]) {
+                                        missionList.remove(i);
+                                    }
+                                }
+                            }
+
+                            // Add missions.
+                            for (Mission newMission : missionUpdate.getAddedMissions()) {
+                                missionList.add(newMission);
+                            }
+
+                            // Save to DB.
+                            Mission[] newMissions = new Mission[missionList.size()];
+                            missionList.toArray(newMissions);
+                            saveMissions(accountId, newMissions);
+                        }
+                    } else {
+                        // TODO(np): Localize error code.
+                        missions.setValue(Resource.newUnavailableResource
+                                (response.body().getError().getErrorMessage(), oldMissionData));
+                    }
+                } else {
+                    missions.setValue(Resource.newUnavailableResource(response.message(), oldMissionData));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkResponse<FinishMissionResponse>> call, Throwable t) {
+                missions.setValue(Resource.newUnavailableResource(t.getMessage(), oldMissionData));
+            }
+        });
+    }
+
     private void saveMissions(final String accountId, final Mission[] newMissions) {
         executors.IO().execute(new Runnable() {
             @Override
             public void run() {
                 // Store in local DB.
+                missionDao.clear();
                 missionDao.save(newMissions);
 
                 // Fetch again from local DB (single source of truth).
