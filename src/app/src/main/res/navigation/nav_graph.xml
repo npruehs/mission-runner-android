@@ -15,4 +15,7 @@
             app:destination="@id/nav_graph_missions" />
     </fragment>
     <include app:graph="@navigation/nav_graph_missions" />
+    <action
+        android:id="@+id/action_global_mainFragment"
+        app:destination="@id/mainFragment" />
 </navigation>

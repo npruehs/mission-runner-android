@@ -69,6 +69,14 @@ public class MainActivity
     }
 
     @Override
+    public void onShowHome() {
+        if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            NavDirections action = NavGraphDirections.actionGlobalMainFragment();
+            navController.navigate(action);
+        }
+    }
+
+    @Override
     public void onShowMissions() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             navController.navigate(R.id.showMissionsFragment);

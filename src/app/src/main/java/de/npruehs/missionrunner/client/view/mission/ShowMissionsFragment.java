@@ -3,6 +3,9 @@ package de.npruehs.missionrunner.client.view.mission;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -38,6 +41,8 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -90,6 +95,24 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     }
 
     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_missions, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                showHome();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onChanged(Resource<Mission[]> missions) {
         if (missions.getData() != null) {
             MissionRecyclerViewAdapter adapter = new MissionRecyclerViewAdapter(missions.getData());
@@ -105,6 +128,12 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
         }
     }
 
+    private void showHome() {
+        if (listener != null) {
+            listener.onShowHome();
+        }
+    }
+
     private void showMission(int missionId) {
         if (listener != null) {
             listener.onShowMission(missionId);
@@ -112,6 +141,7 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     }
 
     public interface OnShowMissionsFragmentInteractionListener {
+        void onShowHome();
         void onShowMission(int missionId);
     }
 }
