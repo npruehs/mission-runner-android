@@ -309,6 +309,7 @@ public class DataRepository {
         characters.setValue(Resource.newPendingResource(oldCharacterData));
 
         final ArrayList<Mission> missionList = new ArrayList<>(Arrays.asList(oldMissionData));
+        final ArrayList<Character> characterList = new ArrayList<>(Arrays.asList(oldCharacterData));
 
         // Send request.
         final FinishMissionRequest request = new FinishMissionRequest();
@@ -364,15 +365,35 @@ public class DataRepository {
                         FinishMissionResponse.CharacterUpdate[] characterUpdates = data.getCharacters();
 
                         if (characterUpdates != null) {
-                            for (Character character : oldCharacterData) {
-                                for (FinishMissionResponse.CharacterUpdate characterUpdate : characterUpdates) {
+                            for (FinishMissionResponse.CharacterUpdate characterUpdate : characterUpdates) {
+                                boolean newCharacter = true;
+
+                                for (Character character : characterList) {
                                     if (character.getId() == characterUpdate.getId()) {
+                                        newCharacter = false;
                                         character.setStatus(characterUpdate.getStatus());
+                                        break;
                                     }
+                                }
+
+                                // Add new characters.
+                                if (newCharacter) {
+                                    Character character = new Character();
+                                    character.setId(characterUpdate.getId());
+                                    character.setAccountId(accountId);
+                                    character.setName(characterUpdate.getName());
+                                    character.setStatus(characterUpdate.getStatus());
+                                    character.setMissionId(characterUpdate.getMissionId());
+                                    character.setSkills(characterUpdate.getSkills());
+
+                                    characterList.add(character);
                                 }
                             }
 
-                            saveCharacters(accountId, oldCharacterData);
+                            // Save to DB.
+                            Character[] newCharacters = new Character[characterList.size()];
+                            characterList.toArray(newCharacters);
+                            saveCharacters(accountId, newCharacters);
                         }
                     } else {
                         // TODO(np): Localize error code.

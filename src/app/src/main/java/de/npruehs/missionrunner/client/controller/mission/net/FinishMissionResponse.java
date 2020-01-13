@@ -1,5 +1,6 @@
 package de.npruehs.missionrunner.client.controller.mission.net;
 
+import de.npruehs.missionrunner.client.model.character.CharacterSkill;
 import de.npruehs.missionrunner.client.model.character.CharacterStatus;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 
@@ -76,8 +77,10 @@ public class FinishMissionResponse {
 
     public static class CharacterUpdate {
         private int id;
+        private String name;
         private CharacterStatus status;
         private int missionId;
+        private CharacterSkill[] skills;
 
         public int getId() {
             return id;
@@ -85,6 +88,14 @@ public class FinishMissionResponse {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public CharacterStatus getStatus() {
@@ -101,6 +112,14 @@ public class FinishMissionResponse {
 
         public void setMissionId(int missionId) {
             this.missionId = missionId;
+        }
+
+        public CharacterSkill[] getSkills() {
+            return skills;
+        }
+
+        public void setSkills(CharacterSkill[] skills) {
+            this.skills = skills;
         }
     }
 }
