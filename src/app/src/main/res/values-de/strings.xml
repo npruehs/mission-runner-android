@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Mission Runner</string>
+    <string name="main_text_account_level">Level:</string>
+    <string name="main_text_account_score">Punkte:</string>
+    <string name="main_button_missions">Missionen</string>
+    <string name="missions_text_header">Missionen</string>
+    <string name="mission_text_time">Benötigte Zeit:</string>
+    <string name="mission_text_reward">Belohnung:</string>
+    <string name="preferences_account" translatable="false">de.npruehs.missionrunner.client.preferences.account</string>
+    <string name="preferences_account_id" translatable="false">id</string>
+    <string name="mission_details_text_header">Missionsdetails</string>
+    <string name="mission_details_text_assigned_characters">Zugewiesene Charaktere</string>
+    <string name="mission_details_text_unassigned_characters">Verfügbare Charaktere</string>
+    <string name="mission_text_status_running">Läuft</string>
+    <string name="mission_text_status_open">Offen</string>
+    <string name="mission_text_status_finished">Abgeschlossen</string>
+    <string name="main_button_home">Start</string>
+    <string name="error_mission_requirements_not_met">Anforderungen nicht erfüllt.</string>
+    <string name="main_text_credits">Copyright 2020 Nick Prühs</string>
+</resources>
