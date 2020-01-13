@@ -1,5 +1,6 @@
 package de.npruehs.missionrunner.client;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -36,6 +37,8 @@ public class MainActivity
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
 
+    public static final String EXTRA_MISSIONID = "de.npruehs.missionrunner.client.MISSIONID";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,13 @@ public class MainActivity
         setSupportActionBar(toolbar);
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        // Check for intent.
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(EXTRA_MISSIONID)) {
+            onShowMissions();
+        }
     }
 
     @Override

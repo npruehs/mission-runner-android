@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import de.npruehs.missionrunner.client.ApplicationNotifications;
 import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
@@ -42,6 +43,9 @@ public class MissionDetailsFragment
         MissionCard.OnMissionFinishListener {
     @Inject
     MissionDetailsViewModel viewModel;
+
+    @Inject
+    ApplicationNotifications notifications;
 
     private MissionCard missionCard;
     private RecyclerView recyclerViewAssignedCharacters;
@@ -263,6 +267,13 @@ public class MissionDetailsFragment
         }
 
         viewModel.startMission(missionId, characterIds);
+
+        // Add notification.
+        Mission mission = missionCard.getMission();
+
+        if (mission != null) {
+            notifications.addMissionFinishedNotification(mission.getRequiredTime(), missionId);
+        }
 
         // Return to mission list.
         returnToMissions();

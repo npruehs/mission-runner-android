@@ -6,8 +6,6 @@
     <string name="missions_text_header">Missionen</string>
     <string name="mission_text_time">Benötigte Zeit:</string>
     <string name="mission_text_reward">Belohnung:</string>
-    <string name="preferences_account" translatable="false">de.npruehs.missionrunner.client.preferences.account</string>
-    <string name="preferences_account_id" translatable="false">id</string>
     <string name="mission_details_text_header">Missionsdetails</string>
     <string name="mission_details_text_assigned_characters">Zugewiesene Charaktere</string>
     <string name="mission_details_text_unassigned_characters">Verfügbare Charaktere</string>
@@ -17,4 +15,8 @@
     <string name="main_button_home">Start</string>
     <string name="error_mission_requirements_not_met">Anforderungen nicht erfüllt.</string>
     <string name="main_text_credits">Copyright 2020 Nick Prühs</string>
+    <string name="notification_missionfinished_text">Dein Team hat seine Mission abgeschlossen!</string>
+    <string name="notification_missionfinished_title">Mission abgeschlossen</string>
+    <string name="notification_channel_missions_description">Abgeschlossene Missionen</string>
+    <string name="notification_channel_missions_name">Missionen</string>
 </resources>

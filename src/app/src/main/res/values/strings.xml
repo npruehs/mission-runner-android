@@ -17,4 +17,8 @@
     <string name="main_button_home">Home</string>
     <string name="error_mission_requirements_not_met">Mission requirements not met.</string>
     <string name="main_text_credits">Copyright 2020 Nick Prühs</string>
+    <string name="notification_missionfinished_title">Mission Finished</string>
+    <string name="notification_missionfinished_text">Your team has finished their mission!</string>
+    <string name="notification_channel_missions_name">Missions</string>
+    <string name="notification_channel_missions_description">Finished Missions</string>
 </resources>
