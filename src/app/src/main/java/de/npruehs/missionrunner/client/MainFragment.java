@@ -117,7 +117,7 @@ public class MainFragment extends Fragment implements Observer<Resource<Account>
         // Update data.
         if (account.getData() != null) {
             if (textViewAccountName != null) {
-                textViewAccountName.setText(account.getData().getId());
+                textViewAccountName.setText(account.getData().getName());
             }
 
             if (textViewAccountLevel != null) {
