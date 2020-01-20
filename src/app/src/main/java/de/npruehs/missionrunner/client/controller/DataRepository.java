@@ -1,5 +1,7 @@
 package de.npruehs.missionrunner.client.controller;
 
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
@@ -31,12 +33,15 @@ import de.npruehs.missionrunner.client.model.character.CharacterDao;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDao;
 import de.npruehs.missionrunner.client.model.mission.MissionStatus;
+import de.npruehs.missionrunner.client.view.ErrorMessages;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 @Singleton
 public class DataRepository {
+    private final Application application;
+
     private final AccountService accountService;
     private final AccountDao accountDao;
 
@@ -54,10 +59,12 @@ public class DataRepository {
     private final MediatorLiveData<Resource<Character[]>> characters;
 
     @Inject
-    public DataRepository(AccountService accountService, AccountDao accountDao,
+    public DataRepository(Application application, AccountService accountService, AccountDao accountDao,
                           MissionService missionService, MissionDao missionDao,
                           CharacterService characterService, CharacterDao characterDao,
                           ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
+        this.application = application;
+
         this.accountService = accountService;
         this.accountDao = accountDao;
 
@@ -257,9 +264,8 @@ public class DataRepository {
                             saveCharacters(accountId, oldCharacterData);
                         }
                     } else {
-                        // TODO(np): Localize error code.
-                        missions.setValue(Resource.newUnavailableResource
-                                (response.body().getError().getErrorMessage(), oldMissionData));
+                        String errorMessage = ErrorMessages.get(application, response.body().getError());
+                        missions.setValue(Resource.newUnavailableResource(errorMessage, oldMissionData));
                     }
                 } else {
                     missions.setValue(Resource.newUnavailableResource(response.message(), oldMissionData));
@@ -396,9 +402,8 @@ public class DataRepository {
                             saveCharacters(accountId, newCharacters);
                         }
                     } else {
-                        // TODO(np): Localize error code.
-                        missions.setValue(Resource.newUnavailableResource
-                                (response.body().getError().getErrorMessage(), oldMissionData));
+                        String errorMessage = ErrorMessages.get(application, response.body().getError());
+                        missions.setValue(Resource.newUnavailableResource(errorMessage, oldMissionData));
                     }
                 } else {
                     missions.setValue(Resource.newUnavailableResource(response.message(), oldMissionData));

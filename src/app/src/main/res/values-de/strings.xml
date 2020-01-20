@@ -19,4 +19,5 @@
     <string name="notification_missionfinished_title">Mission abgeschlossen</string>
     <string name="notification_channel_missions_description">Abgeschlossene Missionen</string>
     <string name="notification_channel_missions_name">Missionen</string>
+    <string name="error_bad_request">Ungültige Anfrage.</string>
 </resources>
