@@ -138,16 +138,25 @@ public class DataRepository {
         });
 
         // Fetch from server.
-        Call<Mission[]> call = missionService.getMissions(accountId);
-        call.enqueue(new Callback<Mission[]>() {
+        Call<NetworkResponse<Mission[]>> call = missionService.getMissions(accountId);
+        call.enqueue(new Callback<NetworkResponse<Mission[]>>() {
 
             @Override
-            public void onResponse(Call<Mission[]> call, final Response<Mission[]> response) {
-                saveMissions(accountId, response.body());
+            public void onResponse(Call<NetworkResponse<Mission[]>> call, final Response<NetworkResponse<Mission[]>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        saveMissions(accountId, response.body().getData());
+                    } else {
+                        String errorMessage = ErrorMessages.get(application, response.body().getError());
+                        characters.setValue(Resource.newUnavailableResource(errorMessage, oldMissionsData));
+                    }
+                } else {
+                    characters.setValue(Resource.newUnavailableResource(response.message(), oldMissionsData));
+                }
             }
 
             @Override
-            public void onFailure(Call<Mission[]> call, Throwable t) {
+            public void onFailure(Call<NetworkResponse<Mission[]>> call, Throwable t) {
                 missions.setValue(Resource.newUnavailableResource(t.getMessage()));
             }
         });
@@ -174,16 +183,25 @@ public class DataRepository {
         });
 
         // Fetch from server.
-        Call<Character[]> call = characterService.getCharacters(accountId);
-        call.enqueue(new Callback<Character[]>() {
+        Call<NetworkResponse<Character[]>> call = characterService.getCharacters(accountId);
+        call.enqueue(new Callback<NetworkResponse<Character[]>>() {
 
             @Override
-            public void onResponse(Call<Character[]> call, final Response<Character[]> response) {
-                saveCharacters(accountId, response.body());
+            public void onResponse(Call<NetworkResponse<Character[]>> call, final Response<NetworkResponse<Character[]>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        saveCharacters(accountId, response.body().getData());
+                    } else {
+                        String errorMessage = ErrorMessages.get(application, response.body().getError());
+                        characters.setValue(Resource.newUnavailableResource(errorMessage, oldData));
+                    }
+                } else {
+                    characters.setValue(Resource.newUnavailableResource(response.message(), oldData));
+                }
             }
 
             @Override
-            public void onFailure(Call<Character[]> call, Throwable t) {
+            public void onFailure(Call<NetworkResponse<Character[]>> call, Throwable t) {
                 characters.setValue(Resource.newUnavailableResource(t.getMessage()));
             }
         });

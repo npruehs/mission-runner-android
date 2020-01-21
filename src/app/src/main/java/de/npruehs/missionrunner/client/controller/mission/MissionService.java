@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 
 public interface MissionService {
     @GET("missions/get")
-    Call<Mission[]> getMissions(@Query("accountId") String accountId);
+    Call<NetworkResponse<Mission[]>> getMissions(@Query("accountId") String accountId);
 
     @POST("missions/start")
     Call<NetworkResponse<StartMissionResponse>> startMission(@Body StartMissionRequest request);
