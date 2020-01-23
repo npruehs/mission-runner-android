@@ -12,8 +12,8 @@ public interface MissionDao {
     @Insert(onConflict = REPLACE)
     void insert(Mission[] missions);
 
-    @Query("SELECT * FROM mission WHERE accountId = :accountId")
-    LiveData<Mission[]> get(String accountId);
+    @Query("SELECT * FROM mission")
+    LiveData<Mission[]> get();
 
     @Query("DELETE FROM mission")
     void clear();

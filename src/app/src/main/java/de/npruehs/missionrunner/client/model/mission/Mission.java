@@ -17,8 +17,6 @@ public class Mission {
     @PrimaryKey
     private int id;
 
-    private String accountId;
-
     private String name;
 
     @TypeConverters(EnumTypeConverter.class)
@@ -40,14 +38,6 @@ public class Mission {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public String getName() {

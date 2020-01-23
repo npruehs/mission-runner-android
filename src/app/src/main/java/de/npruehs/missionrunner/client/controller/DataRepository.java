@@ -125,7 +125,7 @@ public class DataRepository {
         missions.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Mission[]> oldMissionsData = missionDao.get(accountId);
+        final LiveData<Mission[]> oldMissionsData = missionDao.get();
 
         missions.addSource(oldMissionsData, new Observer<Mission[]>() {
             @Override
@@ -145,7 +145,7 @@ public class DataRepository {
             public void onResponse(Call<NetworkResponse<Mission[]>> call, final Response<NetworkResponse<Mission[]>> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        saveMissions(accountId, response.body().getData());
+                        saveMissions(response.body().getData());
                     } else {
                         String errorMessage = ErrorMessages.get(application, response.body().getError());
                         characters.setValue(Resource.newUnavailableResource(errorMessage, oldMissionsData));
@@ -170,7 +170,7 @@ public class DataRepository {
         characters.setValue(Resource.newPendingResource());
 
         // Fetch from local DB.
-        final LiveData<Character[]> oldData = characterDao.get(accountId);
+        final LiveData<Character[]> oldData = characterDao.get();
 
         characters.addSource(oldData, new Observer<Character[]>() {
             @Override
@@ -190,7 +190,7 @@ public class DataRepository {
             public void onResponse(Call<NetworkResponse<Character[]>> call, final Response<NetworkResponse<Character[]>> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        saveCharacters(accountId, response.body().getData());
+                        saveCharacters(response.body().getData());
                     } else {
                         String errorMessage = ErrorMessages.get(application, response.body().getError());
                         characters.setValue(Resource.newUnavailableResource(errorMessage, oldData));
@@ -264,7 +264,7 @@ public class DataRepository {
                                 }
                             }
 
-                            saveMissions(accountId, oldMissionData);
+                            saveMissions(oldMissionData);
                         }
 
                         // Update character data.
@@ -279,7 +279,7 @@ public class DataRepository {
                                 }
                             }
 
-                            saveCharacters(accountId, oldCharacterData);
+                            saveCharacters(oldCharacterData);
                         }
                     } else {
                         String errorMessage = ErrorMessages.get(application, response.body().getError());
@@ -382,7 +382,7 @@ public class DataRepository {
                             // Save to DB.
                             Mission[] newMissions = new Mission[missionList.size()];
                             missionList.toArray(newMissions);
-                            saveMissions(accountId, newMissions);
+                            saveMissions(newMissions);
                         }
 
                         // Update character data.
@@ -404,7 +404,6 @@ public class DataRepository {
                                 if (newCharacter) {
                                     Character character = new Character();
                                     character.setId(characterUpdate.getId());
-                                    character.setAccountId(accountId);
                                     character.setName(characterUpdate.getName());
                                     character.setStatus(characterUpdate.getStatus());
                                     character.setMissionId(characterUpdate.getMissionId());
@@ -417,7 +416,7 @@ public class DataRepository {
                             // Save to DB.
                             Character[] newCharacters = new Character[characterList.size()];
                             characterList.toArray(newCharacters);
-                            saveCharacters(accountId, newCharacters);
+                            saveCharacters(newCharacters);
                         }
                     } else {
                         String errorMessage = ErrorMessages.get(application, response.body().getError());
@@ -463,7 +462,7 @@ public class DataRepository {
         });
     }
 
-    private void saveMissions(final String accountId, final Mission[] newMissions) {
+    private void saveMissions(final Mission[] newMissions) {
         executors.IO().execute(new Runnable() {
             @Override
             public void run() {
@@ -475,7 +474,7 @@ public class DataRepository {
                 executors.main().execute(new Runnable() {
                     @Override
                     public void run() {
-                        final LiveData<Mission[]> newMissionData = missionDao.get(accountId);
+                        final LiveData<Mission[]> newMissionData = missionDao.get();
 
                         missions.addSource(newMissionData, new Observer<Mission[]>() {
                             @Override
@@ -492,7 +491,7 @@ public class DataRepository {
         });
     }
 
-    private void saveCharacters(final String accountId, final Character[] newCharacters) {
+    private void saveCharacters(final Character[] newCharacters) {
         executors.IO().execute(new Runnable() {
             @Override
             public void run() {
@@ -503,7 +502,7 @@ public class DataRepository {
                 executors.main().execute(new Runnable() {
                     @Override
                     public void run() {
-                        final LiveData<Character[]> newData = characterDao.get(accountId);
+                        final LiveData<Character[]> newData = characterDao.get();
 
                         characters.addSource(newData, new Observer<Character[]>() {
                             @Override

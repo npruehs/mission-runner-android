@@ -12,8 +12,6 @@ public class Character {
     @PrimaryKey
     private int id;
 
-    private String accountId;
-
     private String name;
 
     @TypeConverters(EnumTypeConverter.class)
@@ -30,14 +28,6 @@ public class Character {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public String getName() {

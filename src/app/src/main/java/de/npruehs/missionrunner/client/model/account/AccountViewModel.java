@@ -11,13 +11,13 @@ import de.npruehs.missionrunner.client.model.Resource;
 
 @ActivityScope
 public class AccountViewModel extends ViewModel {
-    private final DataRepository datatRepository;
+    private final DataRepository dataRepository;
     private final LiveData<Resource<Account>> account;
 
     @Inject
-    public AccountViewModel(DataRepository datatRepository) {
-        this.datatRepository = datatRepository;
-        account = datatRepository.getAccount();
+    public AccountViewModel(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
+        account = dataRepository.getAccount();
     }
 
     public LiveData<Resource<Account>> getAccount() {

@@ -12,6 +12,6 @@ public interface CharacterDao {
     @Insert(onConflict = REPLACE)
     void insert(Character[] characters);
 
-    @Query("SELECT * FROM character WHERE accountId = :accountId")
-    LiveData<Character[]> get(String accountId);
+    @Query("SELECT * FROM character")
+    LiveData<Character[]> get();
 }
