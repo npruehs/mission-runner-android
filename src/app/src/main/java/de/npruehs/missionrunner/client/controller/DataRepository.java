@@ -496,6 +496,7 @@ public class DataRepository {
             @Override
             public void run() {
                 // Store in local DB.
+                characterDao.clear();
                 characterDao.insert(newCharacters);
 
                 // Fetch again from local DB (single source of truth).

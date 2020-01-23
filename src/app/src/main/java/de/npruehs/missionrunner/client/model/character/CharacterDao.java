@@ -14,4 +14,7 @@ public interface CharacterDao {
 
     @Query("SELECT * FROM character")
     LiveData<Character[]> get();
+
+    @Query("DELETE FROM character")
+    void clear();
 }
