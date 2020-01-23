@@ -145,7 +145,15 @@ public class DataRepository {
             public void onResponse(Call<NetworkResponse<Mission[]>> call, final Response<NetworkResponse<Mission[]>> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        saveMissions(response.body().getData());
+                        Mission[] newMissions = response.body().getData();
+
+                        for (Mission mission : newMissions) {
+                            if (mission.getStatus() != MissionStatus.OPEN) {
+                                mission.setRemainingSeconds(mission.getRemainingTime());
+                            }
+                        }
+
+                        saveMissions(newMissions);
                     } else {
                         String errorMessage = ErrorMessages.get(application, response.body().getError());
                         characters.setValue(Resource.newUnavailableResource(errorMessage, oldMissionsData));
@@ -258,8 +266,7 @@ public class DataRepository {
                                     mission.setStatus(missionUpdate.getStatus());
 
                                     if (mission.getStatus() == MissionStatus.RUNNING) {
-                                        mission.setFinishTime(DateTime.now(DateTimeZone.UTC)
-                                                .plusSeconds(mission.getRequiredTime()));
+                                        mission.setRemainingSeconds(mission.getRequiredTime());
                                     }
                                 }
                             }

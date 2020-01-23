@@ -1,12 +1,14 @@
 package de.npruehs.missionrunner.client.model.mission;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
 
 import de.npruehs.missionrunner.client.model.DateTimeTypeConverter;
 import de.npruehs.missionrunner.client.model.EnumTypeConverter;
@@ -26,6 +28,9 @@ public class Mission {
     private MissionRequirement[] requirements;
 
     private int requiredTime;
+
+    @Ignore
+    private int remainingTime;
 
     private int reward;
 
@@ -72,6 +77,10 @@ public class Mission {
         this.requiredTime = requiredTime;
     }
 
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
     public int getReward() {
         return reward;
     }
@@ -89,8 +98,12 @@ public class Mission {
     }
 
     public int getRemainingSeconds() {
-        Period remainingTime = new Period(DateTime.now(DateTimeZone.UTC), getFinishTime());
-        return Math.max(remainingTime.getSeconds(), 0);
+        Period remainingTimePeriod = new Period(DateTime.now(DateTimeZone.UTC), getFinishTime(), PeriodType.seconds());
+        return Math.max(remainingTimePeriod.getSeconds(), 0);
+    }
+
+    public void setRemainingSeconds(int remainingSeconds) {
+        setFinishTime(DateTime.now(DateTimeZone.UTC).plusSeconds(remainingSeconds));
     }
 
     public boolean isRunning() {

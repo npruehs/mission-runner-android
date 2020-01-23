@@ -83,7 +83,7 @@ public class MissionCard extends CardView {
                     break;
 
                 case RUNNING:
-                    textViewMissionTime.setText(Integer.toString(mission.getRequiredTime()));
+                    textViewMissionTime.setText(Integer.toString(mission.getRemainingSeconds()));
 
                     if (missionCountdown != null) {
                         missionCountdown.cancel();
