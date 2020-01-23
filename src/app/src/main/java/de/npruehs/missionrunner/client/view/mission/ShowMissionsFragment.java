@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     MissionViewModel viewModel;
 
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     private OnShowMissionsFragmentInteractionListener listener;
 
@@ -62,6 +64,8 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
 
         RecyclerView.LayoutManager recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
+
+        progressBar = view.findViewById(R.id.progressBar);
 
         // Bind view to view model.
         viewModel.getMissions().observe(getViewLifecycleOwner(), this);
@@ -118,6 +122,29 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
             MissionRecyclerViewAdapter adapter = new MissionRecyclerViewAdapter(missions.getData());
             adapter.setMissionSelectionListener(this);
             recyclerView.setAdapter(adapter);
+        }
+
+        // Update loading indicator.
+        switch (missions.getStatus()) {
+            case AVAILABLE:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+                break;
+
+            case PENDING:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                break;
+
+            case UNAVAILABLE:
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                Toast.makeText(getContext(), missions.getError(), Toast.LENGTH_LONG).show();
+                break;
         }
     }
 
