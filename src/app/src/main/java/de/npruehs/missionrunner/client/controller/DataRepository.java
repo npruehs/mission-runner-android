@@ -282,6 +282,7 @@ public class DataRepository {
                                 for (StartMissionResponse.CharacterUpdate characterUpdate : characterUpdates) {
                                     if (character.getId() == characterUpdate.getId()) {
                                         character.setStatus(characterUpdate.getStatus());
+                                        character.setMissionId(characterUpdate.getMissionId());
                                     }
                                 }
                             }
