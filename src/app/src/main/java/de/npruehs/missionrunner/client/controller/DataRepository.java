@@ -115,21 +115,21 @@ public class DataRepository {
                     account.removeSource(oldAccountData);
                     account.setValue(Resource.newPendingResource(a));
                 }
-            }
-        });
 
-        // Fetch from server.
-        Call<Account> accountCall = accountService.getAccount(accountId);
-        accountCall.enqueue(new Callback<Account>() {
+                // Fetch from server.
+                Call<Account> accountCall = accountService.getAccount(accountId);
+                accountCall.enqueue(new Callback<Account>() {
 
-            @Override
-            public void onResponse(Call<Account> call, final Response<Account> response) {
-                saveAccount(response.body());
-            }
+                    @Override
+                    public void onResponse(Call<Account> call, final Response<Account> response) {
+                        saveAccount(response.body());
+                    }
 
-            @Override
-            public void onFailure(Call<Account> call, Throwable t) {
-                account.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    @Override
+                    public void onFailure(Call<Account> call, Throwable t) {
+                        account.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    }
+                });
             }
         });
 
@@ -151,38 +151,38 @@ public class DataRepository {
                     missions.removeSource(oldMissionsData);
                     missions.setValue(Resource.newPendingResource(m));
                 }
-            }
-        });
 
-        // Fetch from server.
-        Call<NetworkResponse<Mission[]>> call = missionService.getMissions(accountId);
-        call.enqueue(new Callback<NetworkResponse<Mission[]>>() {
+                // Fetch from server.
+                Call<NetworkResponse<Mission[]>> call = missionService.getMissions(accountId);
+                call.enqueue(new Callback<NetworkResponse<Mission[]>>() {
 
-            @Override
-            public void onResponse(Call<NetworkResponse<Mission[]>> call, final Response<NetworkResponse<Mission[]>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().isSuccess()) {
-                        Mission[] newMissions = response.body().getData();
+                    @Override
+                    public void onResponse(Call<NetworkResponse<Mission[]>> call, final Response<NetworkResponse<Mission[]>> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body().isSuccess()) {
+                                Mission[] newMissions = response.body().getData();
 
-                        for (Mission mission : newMissions) {
-                            if (mission.getStatus() != MissionStatus.OPEN) {
-                                mission.setRemainingSeconds(mission.getRemainingTime());
+                                for (Mission mission : newMissions) {
+                                    if (mission.getStatus() != MissionStatus.OPEN) {
+                                        mission.setRemainingSeconds(mission.getRemainingTime());
+                                    }
+                                }
+
+                                saveMissions(newMissions);
+                            } else {
+                                String errorMessage = ErrorMessages.get(application, response.body().getError());
+                                characters.setValue(Resource.newUnavailableResource(errorMessage, oldMissionsData));
                             }
+                        } else {
+                            characters.setValue(Resource.newUnavailableResource(response.message(), oldMissionsData));
                         }
-
-                        saveMissions(newMissions);
-                    } else {
-                        String errorMessage = ErrorMessages.get(application, response.body().getError());
-                        characters.setValue(Resource.newUnavailableResource(errorMessage, oldMissionsData));
                     }
-                } else {
-                    characters.setValue(Resource.newUnavailableResource(response.message(), oldMissionsData));
-                }
-            }
 
-            @Override
-            public void onFailure(Call<NetworkResponse<Mission[]>> call, Throwable t) {
-                missions.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    @Override
+                    public void onFailure(Call<NetworkResponse<Mission[]>> call, Throwable t) {
+                        missions.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    }
+                });
             }
         });
 
@@ -204,30 +204,30 @@ public class DataRepository {
                     characters.removeSource(oldData);
                     characters.setValue(Resource.newPendingResource(c));
                 }
-            }
-        });
 
-        // Fetch from server.
-        Call<NetworkResponse<Character[]>> call = characterService.getCharacters(accountId);
-        call.enqueue(new Callback<NetworkResponse<Character[]>>() {
+                // Fetch from server.
+                Call<NetworkResponse<Character[]>> call = characterService.getCharacters(accountId);
+                call.enqueue(new Callback<NetworkResponse<Character[]>>() {
 
-            @Override
-            public void onResponse(Call<NetworkResponse<Character[]>> call, final Response<NetworkResponse<Character[]>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().isSuccess()) {
-                        saveCharacters(response.body().getData());
-                    } else {
-                        String errorMessage = ErrorMessages.get(application, response.body().getError());
-                        characters.setValue(Resource.newUnavailableResource(errorMessage, oldData));
+                    @Override
+                    public void onResponse(Call<NetworkResponse<Character[]>> call, final Response<NetworkResponse<Character[]>> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body().isSuccess()) {
+                                saveCharacters(response.body().getData());
+                            } else {
+                                String errorMessage = ErrorMessages.get(application, response.body().getError());
+                                characters.setValue(Resource.newUnavailableResource(errorMessage, oldData));
+                            }
+                        } else {
+                            characters.setValue(Resource.newUnavailableResource(response.message(), oldData));
+                        }
                     }
-                } else {
-                    characters.setValue(Resource.newUnavailableResource(response.message(), oldData));
-                }
-            }
 
-            @Override
-            public void onFailure(Call<NetworkResponse<Character[]>> call, Throwable t) {
-                characters.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    @Override
+                    public void onFailure(Call<NetworkResponse<Character[]>> call, Throwable t) {
+                        characters.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    }
+                });
             }
         });
 
