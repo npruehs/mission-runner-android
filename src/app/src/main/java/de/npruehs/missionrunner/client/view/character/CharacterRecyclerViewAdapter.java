@@ -7,13 +7,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.npruehs.missionrunner.client.model.character.Character;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 
 public class CharacterRecyclerViewAdapter extends RecyclerView.Adapter<CharacterRecyclerViewViewHolder> implements View.OnClickListener {
     private final Character[] characters;
+    private final LocalizationData localization;
+
     private OnCharacterSelectListener listener;
 
-    public CharacterRecyclerViewAdapter(Character[] characters) {
+    public CharacterRecyclerViewAdapter(Character[] characters, LocalizationData localization) {
         this.characters = characters;
+        this.localization = localization;
     }
 
     @NonNull
@@ -27,7 +31,7 @@ public class CharacterRecyclerViewAdapter extends RecyclerView.Adapter<Character
     @Override
     public void onBindViewHolder(@NonNull CharacterRecyclerViewViewHolder holder, int position) {
         Character character = characters[position];
-        holder.getCharacterCard().setCharacter(character);
+        holder.getCharacterCard().setCharacter(character, localization);
     }
 
     @Override

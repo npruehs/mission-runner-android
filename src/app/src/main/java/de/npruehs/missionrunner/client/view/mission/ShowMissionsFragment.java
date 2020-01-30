@@ -24,10 +24,11 @@ import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.model.Resource;
+import de.npruehs.missionrunner.client.model.mission.LocalizedMissions;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionViewModel;
 
-public class ShowMissionsFragment extends Fragment implements Observer<Resource<Mission[]>>, MissionRecyclerViewAdapter.OnMissionSelectListener {
+public class ShowMissionsFragment extends Fragment implements Observer<Resource<LocalizedMissions>>, MissionRecyclerViewAdapter.OnMissionSelectListener {
     @Inject
     MissionViewModel viewModel;
 
@@ -68,7 +69,7 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
         progressBar = view.findViewById(R.id.progressBar);
 
         // Bind view to view model.
-        viewModel.getMissions().observe(getViewLifecycleOwner(), this);
+        viewModel.getLocalizedMissions().observe(getViewLifecycleOwner(), this);
     }
 
     @Override
@@ -117,9 +118,10 @@ public class ShowMissionsFragment extends Fragment implements Observer<Resource<
     }
 
     @Override
-    public void onChanged(Resource<Mission[]> missions) {
+    public void onChanged(Resource<LocalizedMissions> missions) {
         if (missions.getData() != null) {
-            MissionRecyclerViewAdapter adapter = new MissionRecyclerViewAdapter(missions.getData());
+            MissionRecyclerViewAdapter adapter = new MissionRecyclerViewAdapter
+                    (missions.getData().getMissions(), missions.getData().getLocalization());
             adapter.setMissionSelectionListener(this);
             recyclerView.setAdapter(adapter);
         }

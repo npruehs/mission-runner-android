@@ -11,6 +11,7 @@ import de.npruehs.missionrunner.client.ActivityScope;
 import de.npruehs.missionrunner.client.controller.DataRepository;
 import de.npruehs.missionrunner.client.model.Resource;
 import de.npruehs.missionrunner.client.model.character.Character;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 
 @ActivityScope
 public class MissionDetailsViewModel extends ViewModel {
@@ -18,6 +19,7 @@ public class MissionDetailsViewModel extends ViewModel {
 
     private final LiveData<Resource<Mission[]>> missions;
     private final LiveData<Resource<Character[]>> characters;
+    private final LiveData<Resource<LocalizationData>> localization;
 
     private final MediatorLiveData<MissionDetails> missionDetails;
 
@@ -27,6 +29,7 @@ public class MissionDetailsViewModel extends ViewModel {
 
         missions = missionRepository.getMissions();
         characters = missionRepository.getCharacters();
+        localization = missionRepository.getLocalization();
 
         missionDetails = new MediatorLiveData<>();
 
@@ -34,15 +37,23 @@ public class MissionDetailsViewModel extends ViewModel {
             @Override
             public void onChanged(Resource<Mission[]> r) {
                 missionDetails.setValue(new MissionDetails
-                        (missions.getValue().getData(), characters.getValue().getData()));
+                        (missions.getValue().getData(), characters.getValue().getData(), localization.getValue().getData()));
             }
         });
 
         missionDetails.addSource(characters, new Observer<Resource<Character[]>>() {
             @Override
-            public void onChanged(Resource<Character[]> r) {
+            public void onChanged(Resource<Character[]> c) {
                 missionDetails.setValue(new MissionDetails
-                        (missions.getValue().getData(), characters.getValue().getData()));
+                        (missions.getValue().getData(), characters.getValue().getData(), localization.getValue().getData()));
+            }
+        });
+
+        missionDetails.addSource(localization, new Observer<Resource<LocalizationData>>() {
+            @Override
+            public void onChanged(Resource<LocalizationData> l) {
+                missionDetails.setValue(new MissionDetails
+                        (missions.getValue().getData(), characters.getValue().getData(), localization.getValue().getData()));
             }
         });
     }
@@ -54,6 +65,8 @@ public class MissionDetailsViewModel extends ViewModel {
     public LiveData<Resource<Character[]>> getCharacters() {
         return characters;
     }
+
+    public LiveData<Resource<LocalizationData>> getLocalization() { return localization; }
 
     public MediatorLiveData<MissionDetails> getMissionDetails() {
         return missionDetails;

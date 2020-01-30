@@ -29,6 +29,7 @@ import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvid
 import de.npruehs.missionrunner.client.model.character.Character;
 import de.npruehs.missionrunner.client.model.character.CharacterSkill;
 import de.npruehs.missionrunner.client.model.character.CharacterStatus;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDetails;
 import de.npruehs.missionrunner.client.model.mission.MissionDetailsViewModel;
@@ -48,6 +49,8 @@ public class MissionDetailsFragment
     ApplicationNotifications notifications;
 
     private MissionCard missionCard;
+    private LocalizationData localization;
+
     private RecyclerView recyclerViewAssignedCharacters;
     private TextView textViewUnassignedCharacters;
     private RecyclerView recyclerViewUnassignedCharacters;
@@ -156,21 +159,23 @@ public class MissionDetailsFragment
         if (missionDetails.getMissions() != null) {
             for (Mission mission : missionDetails.getMissions()) {
                 if (mission != null && mission.getId() == missionId) {
-                    showMission(mission);
+                    showMission(mission, missionDetails.getLocalization());
                     break;
                 }
             }
         }
 
         if (missionDetails.getCharacters() != null) {
-            showCharacters(missionDetails.getCharacters());
+            showCharacters(missionDetails.getCharacters(), missionDetails.getLocalization());
         }
     }
 
-    private void showMission(Mission mission) {
+    private void showMission(Mission mission, LocalizationData localization) {
         if (missionCard != null) {
-            missionCard.setMission(mission);
+            missionCard.setMission(mission, localization);
         }
+
+        this.localization = localization;
 
         boolean canStartMission = !mission.isRunning() && !mission.isFinished();
 
@@ -180,7 +185,7 @@ public class MissionDetailsFragment
         updateButtons();
     }
 
-    private void showCharacters(Character[] characters) {
+    private void showCharacters(Character[] characters, LocalizationData localization) {
         assignedCharacters.clear();
         unassignedCharacters.clear();
 
@@ -192,7 +197,7 @@ public class MissionDetailsFragment
             }
         }
 
-        updateCharacters();
+        updateCharacters(localization);
     }
 
     @Override
@@ -217,19 +222,19 @@ public class MissionDetailsFragment
             assignedCharacters.add(character);
         }
 
-        updateCharacters();
+        updateCharacters(localization);
     }
 
-    private void updateCharacters() {
+    private void updateCharacters(LocalizationData localization) {
         Character[] charactersToShow = new Character[assignedCharacters.size()];
         assignedCharacters.toArray(charactersToShow);
-        CharacterRecyclerViewAdapter adapter = new CharacterRecyclerViewAdapter(charactersToShow);
+        CharacterRecyclerViewAdapter adapter = new CharacterRecyclerViewAdapter(charactersToShow, localization);
         adapter.setCharacterSelectionListener(this);
         recyclerViewAssignedCharacters.setAdapter(adapter);
 
         charactersToShow = new Character[unassignedCharacters.size()];
         unassignedCharacters.toArray(charactersToShow);
-        adapter = new CharacterRecyclerViewAdapter(charactersToShow);
+        adapter = new CharacterRecyclerViewAdapter(charactersToShow, localization);
         adapter.setCharacterSelectionListener(this);
         recyclerViewUnassignedCharacters.setAdapter(adapter);
     }

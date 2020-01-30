@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import de.npruehs.missionrunner.client.R;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionRequirement;
 
@@ -22,6 +23,7 @@ public class MissionCard extends CardView {
     private TextView textViewMissionRewards;
 
     private Mission mission;
+    private LocalizationData localization;
 
     private CountDownTimer missionCountdown;
 
@@ -49,31 +51,34 @@ public class MissionCard extends CardView {
         return mission;
     }
 
-    public void setMission(final Mission mission) {
+    public void setMission(final Mission mission, LocalizationData localization) {
         this.mission = mission;
+        this.localization = localization;
 
-        if (textViewMissionName != null) {
-            textViewMissionName.setText(mission.getName());
-        }
-
-        if (textViewMissionRequirements != null) {
-            MissionRequirement[] missionRequirements = mission.getRequirements();
-            StringBuilder missionRequirementsString = new StringBuilder();
-
-            for (int i = 0; i < missionRequirements.length; ++i) {
-                if (i > 0) {
-                    missionRequirementsString.append(", ");
-                }
-
-                missionRequirementsString.append(missionRequirements[i].getRequirement());
-
-                if (missionRequirements[i].getCount() > 1) {
-                    missionRequirementsString.append(" x");
-                    missionRequirementsString.append(missionRequirements[i].getCount());
-                }
+        if (localization != null) {
+            if (textViewMissionName != null) {
+                textViewMissionName.setText(localization.get(mission.getName()));
             }
 
-            textViewMissionRequirements.setText(missionRequirementsString.toString());
+            if (textViewMissionRequirements != null) {
+                MissionRequirement[] missionRequirements = mission.getRequirements();
+                StringBuilder missionRequirementsString = new StringBuilder();
+
+                for (int i = 0; i < missionRequirements.length; ++i) {
+                    if (i > 0) {
+                        missionRequirementsString.append(", ");
+                    }
+
+                    missionRequirementsString.append(localization.get(missionRequirements[i].getRequirement()));
+
+                    if (missionRequirements[i].getCount() > 1) {
+                        missionRequirementsString.append(" x");
+                        missionRequirementsString.append(missionRequirements[i].getCount());
+                    }
+                }
+
+                textViewMissionRequirements.setText(missionRequirementsString.toString());
+            }
         }
 
         if (textViewMissionTime != null) {

@@ -12,12 +12,14 @@ import androidx.cardview.widget.CardView;
 import de.npruehs.missionrunner.client.R;
 import de.npruehs.missionrunner.client.model.character.Character;
 import de.npruehs.missionrunner.client.model.character.CharacterSkill;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 
 public class CharacterCard extends CardView {
     private TextView textViewCharacterName;
     private TextView textViewCharacterSkills;
 
     private Character character;
+    private LocalizationData localization;
 
     public CharacterCard(@NonNull Context context) {
         super(context);
@@ -41,11 +43,12 @@ public class CharacterCard extends CardView {
         return character;
     }
 
-    public void setCharacter(Character character) {
+    public void setCharacter(Character character, LocalizationData localization) {
         this.character = character;
+        this.localization = localization;
 
         if (textViewCharacterName != null) {
-            textViewCharacterName.setText(character.getName());
+            textViewCharacterName.setText(localization.get(character.getName()));
         }
 
         if (textViewCharacterSkills != null) {
@@ -57,7 +60,7 @@ public class CharacterCard extends CardView {
                     characterSkillsString.append(", ");
                 }
 
-                characterSkillsString.append(characterSkills[i].getSkill());
+                characterSkillsString.append(localization.get(characterSkills[i].getSkill()));
 
                 if (characterSkills[i].getCount() > 1) {
                     characterSkillsString.append(" x");

@@ -22,4 +22,6 @@
     <string name="notification_channel_missions_name">Missions</string>
     <string name="notification_channel_missions_description">Finished Missions</string>
     <string name="error_bad_request">Bad request.</string>
+    <string name="preferences_localization" translatable="false">de.npruehs.missionrunner.client.preferences.localization</string>
+    <string name="preferences_localization_hash" translatable="false">hash</string>
 </resources>

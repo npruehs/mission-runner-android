@@ -16,6 +16,7 @@ import de.npruehs.missionrunner.client.controller.ApplicationComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponent;
 import de.npruehs.missionrunner.client.controller.account.AccountComponentProvider;
 import de.npruehs.missionrunner.client.controller.character.CharacterComponent;
+import de.npruehs.missionrunner.client.controller.localization.LocalizationComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponent;
 import de.npruehs.missionrunner.client.controller.mission.MissionComponentProvider;
 import de.npruehs.missionrunner.client.view.mission.MissionDetailsFragment;
@@ -33,6 +34,7 @@ public class MainActivity
     private AccountComponent accountComponent;
     private MissionComponent missionComponent;
     private CharacterComponent characterComponent;
+    private LocalizationComponent localizationComponent;
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
@@ -49,6 +51,7 @@ public class MainActivity
         accountComponent = applicationComponent.accountComponent().create();
         missionComponent = applicationComponent.missionComponent().create();
         characterComponent = applicationComponent.characterComponent().create();
+        localizationComponent = applicationComponent.localizationComponent().create();
 
         setContentView(R.layout.activity_main);
 

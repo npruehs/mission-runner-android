@@ -6,9 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,6 +16,8 @@ import de.npruehs.missionrunner.client.ApplicationExecutors;
 import de.npruehs.missionrunner.client.controller.account.AccountIdProvider;
 import de.npruehs.missionrunner.client.controller.account.AccountService;
 import de.npruehs.missionrunner.client.controller.character.CharacterService;
+import de.npruehs.missionrunner.client.controller.localization.LocalizationProvider;
+import de.npruehs.missionrunner.client.controller.localization.LocalizationService;
 import de.npruehs.missionrunner.client.controller.mission.MissionService;
 import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionRequest;
 import de.npruehs.missionrunner.client.controller.mission.net.FinishMissionResponse;
@@ -26,10 +25,14 @@ import de.npruehs.missionrunner.client.controller.mission.net.StartMissionReques
 import de.npruehs.missionrunner.client.controller.mission.net.StartMissionResponse;
 import de.npruehs.missionrunner.client.controller.net.NetworkResponse;
 import de.npruehs.missionrunner.client.model.Resource;
+import de.npruehs.missionrunner.client.model.ResourceStatus;
 import de.npruehs.missionrunner.client.model.account.Account;
 import de.npruehs.missionrunner.client.model.account.AccountDao;
 import de.npruehs.missionrunner.client.model.character.Character;
 import de.npruehs.missionrunner.client.model.character.CharacterDao;
+import de.npruehs.missionrunner.client.model.localization.LocalizationDao;
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
+import de.npruehs.missionrunner.client.model.localization.LocalizedString;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 import de.npruehs.missionrunner.client.model.mission.MissionDao;
 import de.npruehs.missionrunner.client.model.mission.MissionStatus;
@@ -51,18 +54,26 @@ public class DataRepository {
     private final CharacterService characterService;
     private final CharacterDao characterDao;
 
+    private final LocalizationService localizationService;
+    private final LocalizationDao localizationDao;
+
     private final ApplicationExecutors executors;
+
     private final AccountIdProvider accountIdProvider;
+    private final LocalizationProvider localizationProvider;
 
     private final MediatorLiveData<Resource<Account>> account;
     private final MediatorLiveData<Resource<Mission[]>> missions;
     private final MediatorLiveData<Resource<Character[]>> characters;
+    private final MediatorLiveData<Resource<LocalizationData>> localization;
 
     @Inject
     public DataRepository(Application application, AccountService accountService, AccountDao accountDao,
                           MissionService missionService, MissionDao missionDao,
                           CharacterService characterService, CharacterDao characterDao,
-                          ApplicationExecutors executors, AccountIdProvider accountIdProvider) {
+                          LocalizationService localizationService, LocalizationDao localizationDao,
+                          ApplicationExecutors executors, AccountIdProvider accountIdProvider,
+                          LocalizationProvider localizationProvider) {
         this.application = application;
 
         this.accountService = accountService;
@@ -74,12 +85,18 @@ public class DataRepository {
         this.characterService = characterService;
         this.characterDao = characterDao;
 
+        this.localizationService = localizationService;
+        this.localizationDao = localizationDao;
+
         this.executors = executors;
+
         this.accountIdProvider = accountIdProvider;
+        this.localizationProvider = localizationProvider;
 
         this.account = new MediatorLiveData<>();
         this.missions = new MediatorLiveData<>();
         this.characters = new MediatorLiveData<>();
+        this.localization = new MediatorLiveData<>();
     }
 
 
@@ -215,6 +232,63 @@ public class DataRepository {
         });
 
         return characters;
+    }
+
+    public LiveData<Resource<LocalizationData>> getLocalization() {
+        localization.setValue(Resource.newPendingResource());
+
+        // Fetch from local DB.
+        final LiveData<LocalizedString[]> oldLocalization = localizationDao.get();
+
+        localization.addSource(oldLocalization, new Observer<LocalizedString[]>() {
+            @Override
+            public void onChanged(LocalizedString[] s) {
+                localization.removeSource(oldLocalization);
+
+                if (s != null && localization.getValue().getStatus() == ResourceStatus.PENDING) {
+                    localization.setValue(Resource.newPendingResource(
+                            new LocalizationData(localizationProvider.getLocalizationHash(), s)));
+                }
+
+                // Fetch from server.
+                Call<NetworkResponse<LocalizationData>> localizationCall =
+                        localizationService.getLocalization(s != null && s.length > 0 ? localizationProvider.getLocalizationHash() : null);
+                localizationCall.enqueue(new Callback<NetworkResponse<LocalizationData>>() {
+
+                    @Override
+                    public void onResponse(Call<NetworkResponse<LocalizationData>> call, final Response<NetworkResponse<LocalizationData>> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body().isSuccess()) {
+                                LocalizationData newLocalization = response.body().getData();
+
+                                if (newLocalization.getStrings() != null) {
+                                    // Hash showed that we've got out-of-date texts - store new ones.
+                                    saveLocalization(response.body().getData());
+                                } else {
+                                    // Hash showed that we've got up-to-date texts.
+                                    localization.setValue(Resource.newAvailableResource(
+                                            new LocalizationData(localizationProvider.getLocalizationHash(), oldLocalization.getValue())));
+                                }
+                            } else {
+                                String errorMessage = ErrorMessages.get(application, response.body().getError());
+                                localization.setValue(Resource.newUnavailableResource(errorMessage,
+                                        new LocalizationData(localizationProvider.getLocalizationHash(), oldLocalization.getValue())));
+                            }
+                        } else {
+                            localization.setValue(Resource.newUnavailableResource(response.message(),
+                                    new LocalizationData(localizationProvider.getLocalizationHash(), oldLocalization.getValue())));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NetworkResponse<LocalizationData>> call, Throwable t) {
+                        localization.setValue(Resource.newUnavailableResource(t.getMessage()));
+                    }
+                });
+            }
+        });
+
+        return localization;
     }
 
     public void startMission(int missionId, int[] characterIds) {
@@ -519,6 +593,38 @@ public class DataRepository {
                                 if (c != null) {
                                     characters.removeSource(newData);
                                     characters.setValue(Resource.newAvailableResource(c));
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private void saveLocalization(final LocalizationData newLocalization) {
+        executors.IO().execute(new Runnable() {
+            @Override
+            public void run() {
+                // Store in local DB.
+                localizationDao.clear();
+                localizationDao.insert(newLocalization.getStrings());
+
+                localizationProvider.setLocalizationHash(newLocalization.getHash());
+
+                // Fetch again from local DB (single source of truth).
+                executors.main().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final LiveData<LocalizedString[]> newData = localizationDao.get();
+
+                        localization.addSource(newData, new Observer<LocalizedString[]>() {
+                            @Override
+                            public void onChanged(LocalizedString[] s) {
+                                if (s != null) {
+                                    localization.removeSource(newData);
+                                    localization.setValue(Resource.newAvailableResource(
+                                            new LocalizationData(localizationProvider.getLocalizationHash(), s)));
                                 }
                             }
                         });

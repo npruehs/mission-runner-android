@@ -6,14 +6,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.npruehs.missionrunner.client.model.localization.LocalizationData;
 import de.npruehs.missionrunner.client.model.mission.Mission;
 
 public class MissionRecyclerViewAdapter extends RecyclerView.Adapter<MissionRecyclerViewViewHolder> implements View.OnClickListener {
     private final Mission[] missions;
+    private final LocalizationData localization;
+
     private OnMissionSelectListener listener;
 
-    public MissionRecyclerViewAdapter(Mission[] missions) {
+    public MissionRecyclerViewAdapter(Mission[] missions, LocalizationData localization) {
         this.missions = missions;
+        this.localization = localization;
     }
 
     @NonNull
@@ -27,12 +31,12 @@ public class MissionRecyclerViewAdapter extends RecyclerView.Adapter<MissionRecy
     @Override
     public void onBindViewHolder(@NonNull MissionRecyclerViewViewHolder holder, int position) {
         Mission mission = missions[position];
-        holder.getMissionCard().setMission(mission);
+        holder.getMissionCard().setMission(mission, localization);
     }
 
     @Override
     public int getItemCount() {
-        return missions.length;
+        return missions != null ? missions.length : 0;
     }
 
     @Override
